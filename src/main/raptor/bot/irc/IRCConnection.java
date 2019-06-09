@@ -7,6 +7,11 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
+import raptor.bot.irc.message.IRCServerMessage;
 
 public class IRCConnection {
 	private final Socket tcpConnection;
@@ -29,6 +34,21 @@ public class IRCConnection {
 
 	public void pong(final String pingVal) {
 		sendMessage("PONG :%s\n", pingVal);
+	}
+
+	public void join(final String... channels) {
+		sendMessage("JOIN %s\n", String.join(",", channels));
+	}
+
+	public Iterator<IRCServerMessage> getServerMessages() throws IOException {
+		final List<IRCServerMessage> serverMessages = new LinkedList<>();
+
+		String message = serverMessageStream.readLine();
+		while (message != null) {
+			serverMessages.add(new IRCServerMessage(message));
+		}
+
+		return serverMessages.iterator();
 	}
 
 	private void sendMessage(final String commandFormat, final Object... args) {
