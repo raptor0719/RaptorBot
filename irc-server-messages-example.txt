@@ -1,0 +1,26 @@
+:raptor.irc NOTICE * :*** Looking up your hostname...
+:raptor.irc NOTICE * :*** Couldn't resolve your hostname; using your IP address instead
+PING :D2CA925F
+:raptor.irc 001 CABRAL :Welcome to the RaptorNet IRC Network CABRAL!guest@192.168.1.26
+:raptor.irc 002 CABRAL :Your host is raptor.irc, running version UnrealIRCd-4.2.3
+:raptor.irc 003 CABRAL :This server was created Tue Apr 30 09:48:52 2019
+:raptor.irc 004 CABRAL raptor.irc UnrealIRCd-4.2.3 iowrsxzdHtIDZRqpWGTSB lvhopsmntikraqbeIzMQNRTOVKDdGLPZSCcf
+:raptor.irc 005 CABRAL AWAYLEN=307 CASEMAPPING=ascii CHANLIMIT=#:10 CHANMODES=beI,kLf,l,psmntirzMQNRTOVKDdGPZSCc CHANNELLEN=32 CHANTYPES=# DEAF=d ELIST=MNUCT EXCEPTS EXTBAN=~,tmTSOcaRrnqj HCN INVEX :are supported by this server
+:raptor.irc 005 CABRAL KICKLEN=307 KNOCK MAP MAXCHANNELS=10 MAXLIST=b:60,e:60,I:60 MAXNICKLEN=30 MODES=12 NAMESX NETWORK=RaptorNet NICKLEN=30 PREFIX=(qaohv)~&@%+ QUITLEN=307 :are supported by this server
+:raptor.irc 005 CABRAL SAFELIST SILENCE=15 STATUSMSG=~&@%+ TARGMAX=DCCALLOW:,ISON:,JOIN:,KICK:4,KILL:,LIST:,NAMES:1,NOTICE:1,PART:,PRIVMSG:4,SAJOIN:,SAPART:,USERHOST:,USERIP:,WATCH:,WHOIS:1,WHOWAS:1 TOPICLEN=360 UHNAMES USERIP WALLCHOPS WATCH=128 WATCHOPTS=A :are supported by this server
+:raptor.irc 396 CABRAL 966B23D5.E90A6C54.8B5E3F59.IP :is now your displayed host
+:raptor.irc 251 CABRAL :There are 1 users and 1 invisible on 1 servers
+:raptor.irc 254 CABRAL 1 :channels formed
+:raptor.irc 255 CABRAL :I have 2 clients and 0 servers
+:raptor.irc 265 CABRAL 2 2 :Current local users 2, max 2
+:raptor.irc 266 CABRAL 2 2 :Current global users 2, max 2
+:raptor.irc 422 CABRAL :MOTD File is missing
+:CABRAL MODE CABRAL :+iwx
+:CABRAL!guest@966B23D5.E90A6C54.8B5E3F59.IP JOIN :#general
+:raptor.irc 353 CABRAL = #general :CABRAL @raptor0719 
+:raptor.irc 366 CABRAL #general :End of /NAMES list.
+:raptor0719!raptor0719@966B23D5.E90A6C54.8B5E3F59.IP PRIVMSG #general :hello
+:raptor0719!raptor0719@966B23D5.E90A6C54.8B5E3F59.IP PRIVMSG #general :how are you
+:raptor0719!raptor0719@966B23D5.E90A6C54.8B5E3F59.IP PRIVMSG #general :you piece of motherless sack of monkey yellow bellied
+PING :raptor.irc
+PING :raptor.irc

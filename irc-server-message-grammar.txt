@@ -1,0 +1,14 @@
+IRC Server Message Grammar
+
+<server-message> ::= 
+	<ping-message> |
+	<diag-message> |
+	<text-message>
+
+<ping-message> ::= "PING " <payload>
+
+<diag-message> ::= <sender> <response-code> <nick>
+
+<payload> ::= ":" <text>
+
+<text> ::= it's text motherfucker
