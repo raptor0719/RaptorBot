@@ -37,6 +37,10 @@ public class IRCClient {
 				writer.write("PONG " + message.substring(5, message.length()) + "\n");
 				writer.flush();
 			}
+			if (message.contains(":CABRAL")) {
+				writer.write("JOIN #general\n");
+				writer.flush();
+			}
 		}
 	}
 }
