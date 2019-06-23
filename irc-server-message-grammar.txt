@@ -1,14 +1,24 @@
 IRC Server Message Grammar
 
+<message> ::= <server-message> | <client-message>
+
 <server-message> ::= 
-	<ping-message> |
-	<diag-message> |
-	<text-message>
+	<source> <numeric-reply> | 
+	<source> <notice> | 
+	"PING" <payload>
 
-<ping-message> ::= "PING " <payload>
+<numeric-reply> ::= <response-code> <nick> <message>
 
-<diag-message> ::= <sender> <response-code> <nick>
+<client-message> ::= <name> "PRIVMSG" <channel> <payload>
+
+<source> ::= ":" <name>
+
+<channel> ::= REGEX("[&#!+][a-zA-Z0-9.]*")
 
 <payload> ::= ":" <text>
+
+<name> ::= REGEX("[a-zA-Z0-9!@.]*")
+
+<notice> ::= <source> "NOTICE" <payload>
 
 <text> ::= it's text motherfucker
