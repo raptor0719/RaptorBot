@@ -1,24 +1,36 @@
 IRC Server Message Grammar
 
-<message> ::= <server-message> | <client-message>
+<irc-message> ::= <message> <payload> | <message>
 
-<server-message> ::= 
-	<source> <numeric-reply> | 
-	<source> <notice> | 
-	"PING" <payload>
+<message> ::= <sourced-message> | "PING"
 
-<numeric-reply> ::= <response-code> <nick> <message>
+<sourced-message> ::= <source> <message-info>
 
-<client-message> ::= <name> "PRIVMSG" <channel> <payload>
+<message-info> ::=
+	<numeric-reply> |
+	<client-message> |
+	<notice> |
+	<join-declaration> |
+	<mode-declaration
+
+<numeric-reply> ::= <response-code> <name> <params>
+
+<client-message> ::= "PRIVMSG" <channel>
+
+<notice> ::= "NOTICE" "*"
+
+<join-declaration> ::= "JOIN"
+
+<mode-declaration> ::= "MODE" <name>
+
+<payload> ::= ":" <text>
 
 <source> ::= ":" <name>
 
 <channel> ::= REGEX("[&#!+][a-zA-Z0-9.]*")
 
-<payload> ::= ":" <text>
-
 <name> ::= REGEX("[a-zA-Z0-9!@.]*")
 
-<notice> ::= <source> "NOTICE" <payload>
+<params> ::= <text>
 
 <text> ::= it's text motherfucker
