@@ -11,7 +11,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import raptor.bot.irc.message.IRCServerMessage;
+import raptor.bot.irc.message.IrcMessageParser;
+import raptor.bot.irc.message.messages.IrcMessage;
 
 public class IRCConnection {
 	private final Socket tcpConnection;
@@ -40,12 +41,12 @@ public class IRCConnection {
 		sendMessage("JOIN %s\n", String.join(",", channels));
 	}
 
-	public Iterator<IRCServerMessage> getServerMessages() throws IOException {
-		final List<IRCServerMessage> serverMessages = new LinkedList<>();
+	public Iterator<IrcMessage> getServerMessages() throws IOException {
+		final List<IrcMessage> serverMessages = new LinkedList<>();
 
 		String message = serverMessageStream.readLine();
 		while (message != null) {
-			serverMessages.add(new IRCServerMessage(message));
+			serverMessages.add(IrcMessageParser.parseIrcMessage(message));
 		}
 
 		return serverMessages.iterator();
