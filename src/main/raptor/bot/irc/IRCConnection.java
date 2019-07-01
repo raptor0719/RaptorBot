@@ -41,15 +41,24 @@ public class IRCConnection {
 		sendMessage("JOIN %s\n", String.join(",", channels));
 	}
 
+	public void privmsg(final String target, final String message) {
+		sendMessage("PRIVMSG", target, message);
+	}
+
 	public Iterator<IrcMessage> getServerMessages() throws IOException {
 		final List<IrcMessage> serverMessages = new LinkedList<>();
 
 		String message = serverMessageStream.readLine();
 		while (message != null) {
 			serverMessages.add(IrcMessageParser.parseIrcMessage(message));
+			message = serverMessageStream.readLine();
 		}
 
 		return serverMessages.iterator();
+	}
+
+	public boolean isConnected() {
+		return tcpConnection.isConnected();
 	}
 
 	private void sendMessage(final String commandFormat, final Object... args) {
