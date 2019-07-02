@@ -41,6 +41,10 @@ public class IRCConnection {
 		sendMessage("JOIN %s\n", String.join(",", channels));
 	}
 
+	public void part(final String... channels) {
+		sendMessage("PART %s\n", String.join(",", channels));
+	}
+
 	public void privmsg(final String target, final String message) {
 		sendMessage("PRIVMSG", target, message);
 	}
@@ -48,10 +52,11 @@ public class IRCConnection {
 	public Iterator<IrcMessage> getServerMessages() throws IOException {
 		final List<IrcMessage> serverMessages = new LinkedList<>();
 
-		String message = serverMessageStream.readLine();
-		while (message != null) {
-			serverMessages.add(IrcMessageParser.parseIrcMessage(message));
+		// readLine blocks, so make sure it won't block before reading data
+		String message;
+		while (serverMessageStream.ready()) {
 			message = serverMessageStream.readLine();
+			serverMessages.add(IrcMessageParser.parseIrcMessage(message));
 		}
 
 		return serverMessages.iterator();
@@ -62,8 +67,9 @@ public class IRCConnection {
 	}
 
 	private void sendMessage(final String commandFormat, final Object... args) {
+		final String message = String.format(commandFormat, args);
 		try {
-			clientMessageStream.write(String.format(commandFormat, args));
+			clientMessageStream.write(message);
 			clientMessageStream.flush();
 		} catch (final IOException e) {
 			throw new RuntimeException(e);

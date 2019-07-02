@@ -41,7 +41,6 @@ public class IrcMessageParser {
 
 	private static MessageInfo parseMessage(final String message) {
 		final MessageInfo info = new MessageInfo(message);
-
 		if (info.remainingMessage.startsWith("PING")) {
 			info.remainingMessage = info.remainingMessage.substring(info.remainingMessage.indexOf(' ') + 1);
 			info.type = MessageType.Ping;
@@ -136,7 +135,7 @@ public class IrcMessageParser {
 	private static class MessageInfo {
 		public String originalMessage;
 		public String remainingMessage;
-		public MessageType type;
+		public MessageType type = MessageType.UNKNOWN;
 		public String payload;
 		public String source;
 		public String responseCode;
@@ -155,6 +154,7 @@ public class IrcMessageParser {
 		Client,
 		Notice,
 		Mode,
-		Join
+		Join,
+		UNKNOWN
 	}
 }

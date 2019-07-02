@@ -2,58 +2,102 @@ package raptor.bot.irc;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import raptor.bot.irc.message.messages.ClientMessage;
+import raptor.bot.irc.message.messages.IrcMessage;
+import raptor.bot.irc.message.messages.PingMessage;
 
 public class IRCClient {
 	private final String address;
 	private final int port;
 
+	private final String username;
+	private final String nickname;
+
+	private Map<String, List<ChatMessage>> chatMessages;
+
 	private IRCConnection connection;
 
-	public IRCClient(final String address, final int port) {
+	public IRCClient(final String address, final int port, final String username, final String nickname) {
 		this.address = address;
 		this.port = port;
+		this.username = username;
+		this.nickname = nickname;
+		this.chatMessages = new HashMap<String, List<ChatMessage>>();
 	}
 
 	public void connect() throws UnknownHostException, IOException {
-//		connection = new Socket(address, port);
-//		final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(connection.getOutputStream()));
-//		writer.write("USER guest * * :Daniel\n");
-//		writer.write("NICK CABRAL\n");
-//		writer.flush();
-//		final BufferedReader ostream = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-//		while(true) {
-//			final String message = ostream.readLine();
-//			if (message == null)
-//				continue;
-//			System.out.println(message);
-//			if (!connection.isConnected() || connection.isClosed() || message.contains("ERROR"))
-//				break;
-//			if (message.contains("PING")) {
-//				writer.write("PONG " + message.substring(5, message.length()) + "\n");
-//				writer.flush();
-//			}
-//			if (message.contains(":CABRAL")) {
-//				writer.write("JOIN #general\n");
-//				writer.flush();
-//			}
-//		}
+		// Default wait time is 30 seconds
+		connect(30000L);
+	}
+
+	public void connect(final long timeout) throws UnknownHostException, IOException {
 		connection = new IRCConnection(address, port);
 
 		if (connection.isConnected()) {
-			connection.user("", "");
-			connection.nick("");
+			connection.user(username, "RaptorBot.IrcClient");
+			connection.nick(nickname);
+
+			final long currentTime = System.currentTimeMillis();
+			long passedTime = System.currentTimeMillis() - currentTime;
+
+			while (passedTime < timeout) {
+				final Iterator<IrcMessage> messages = connection.getServerMessages();
+				while (messages.hasNext()) {
+					final IrcMessage message = messages.next();
+					if (message instanceof PingMessage) {
+						connection.pong(((PingMessage)message).getPayload());
+						return;
+					}
+				}
+				passedTime = System.currentTimeMillis() - currentTime;
+			}
+			throw new RuntimeException("Timeout occured while waiting for server response.");
 		}
+		throw new RuntimeException("Connection was not able to successfully connect.");
 	}
 
 	public void process() {
+		try {
+			final Iterator<IrcMessage> messages = connection.getServerMessages();
 
+			while (messages.hasNext()) {
+				final IrcMessage message = messages.next();
+
+				if (message instanceof ClientMessage) {
+					final ClientMessage clientMessage = (ClientMessage)message;
+					if (chatMessages.containsKey(clientMessage.getChannel())) {
+						chatMessages.get(clientMessage.getChannel()).add(new ChatMessage(clientMessage.getSource(), clientMessage.getPayload()));
+					}
+				}
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	public Iterator<ChatMessage> getMessages(final String channel) {
-
+		final List<ChatMessage> messages = chatMessages.get(channel);
+		chatMessages.put(channel, new ArrayList<ChatMessage>());
+		return messages.iterator();
 	}
 
 	public void sendMessage(final String message, final String channel) {
+		connection.privmsg(channel, message);
+	}
 
+	public void joinChannel(final String channel) {
+		connection.join(channel);
+		chatMessages.put(channel, new ArrayList<ChatMessage>());
+	}
+
+	public void leaveChannel(final String channel) {
+		connection.part(channel);
+		chatMessages.remove(channel);
 	}
 }
