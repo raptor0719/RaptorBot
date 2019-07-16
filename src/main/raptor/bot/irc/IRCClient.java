@@ -74,6 +74,9 @@ public class IRCClient {
 					if (chatMessages.containsKey(clientMessage.getChannel())) {
 						chatMessages.get(clientMessage.getChannel()).add(new ChatMessage(clientMessage.getSource(), clientMessage.getPayload()));
 					}
+				} else if (message instanceof PingMessage) {
+					final PingMessage ping = (PingMessage)message;
+					connection.pong(ping.getPayload());
 				}
 			}
 		} catch (Exception e) {
