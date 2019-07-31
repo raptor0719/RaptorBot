@@ -1,0 +1,11 @@
+RaptorBot Command Grammar
+
+<bot-command> ::= !<command>
+
+<command> ::= <sound-command>
+
+<sound-command> ::= sound <sound>
+
+<sound> ::= <arg>
+
+<arg> ::= REGEX("[a-zA-Z0-9_-]*")
