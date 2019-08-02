@@ -48,4 +48,10 @@ public class NumericServerReplyMessage extends SourcedMessage {
 			return false;
 		return true;
 	}
+
+	@Override
+	public String toString() {
+		return "NumericServerReplyMessage [responseCode=" + responseCode + ", nick=" + nick + ", getSource()="
+				+ getSource() + ", getPayload()=" + getPayload() + "]";
+	}
 }

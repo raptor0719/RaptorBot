@@ -10,6 +10,7 @@ import java.util.Map;
 
 import raptor.bot.irc.message.messages.ClientMessage;
 import raptor.bot.irc.message.messages.IrcMessage;
+import raptor.bot.irc.message.messages.NumericServerReplyMessage;
 import raptor.bot.irc.message.messages.PingMessage;
 
 public class IRCClient {
@@ -18,16 +19,22 @@ public class IRCClient {
 
 	private final String username;
 	private final String nickname;
+	private final String password;
 
 	private Map<String, List<ChatMessage>> chatMessages;
 
 	private IRCConnection connection;
 
 	public IRCClient(final String address, final int port, final String username, final String nickname) {
+		this(address, port, username, nickname, null);
+	}
+
+	public IRCClient(final String address, final int port, final String username, final String nickname, final String password) {
 		this.address = address;
 		this.port = port;
 		this.username = username;
 		this.nickname = nickname;
+		this.password = password;
 		this.chatMessages = new HashMap<String, List<ChatMessage>>();
 	}
 
@@ -40,6 +47,9 @@ public class IRCClient {
 		connection = new IRCConnection(address, port);
 
 		if (connection.isConnected()) {
+			if (password != null)
+				connection.pass(password);
+
 			connection.user(username, "RaptorBot.IrcClient");
 			connection.nick(nickname);
 
@@ -50,9 +60,15 @@ public class IRCClient {
 				final Iterator<IrcMessage> messages = connection.getServerMessages();
 				while (messages.hasNext()) {
 					final IrcMessage message = messages.next();
+					System.out.println("IRCClient - connect - " + message);
 					if (message instanceof PingMessage) {
 						connection.pong(((PingMessage)message).getPayload());
 						return;
+					} else if (message instanceof NumericServerReplyMessage) {
+						final NumericServerReplyMessage reply = (NumericServerReplyMessage)message;
+						if ("001".equals(reply.getResponseCode())) {
+							return;
+						}
 					}
 				}
 				passedTime = System.currentTimeMillis() - currentTime;

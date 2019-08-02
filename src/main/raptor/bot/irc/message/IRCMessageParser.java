@@ -109,6 +109,11 @@ public class IrcMessageParser {
 		final String nick = parseName(info);
 		info.nick = nick;
 
+		switch (info.responseCode) {
+			case "001":
+
+		}
+
 		info.remainingMessage = info.remainingMessage.substring(info.remainingMessage.indexOf(" :") + 1);
 
 		info.type = MessageType.NumericReply;
@@ -119,7 +124,7 @@ public class IrcMessageParser {
 	private static String parseName(final MessageInfo info) {
 		final String name = info.remainingMessage.split(" ")[0];
 		info.remainingMessage = info.remainingMessage.substring(name.length() + 1);
-		if (!Pattern.matches("[a-zA-Z0-9!@.]*", name))
+		if (!Pattern.matches("[a-zA-Z0-9!@._]*", name))
 			throw new RuntimeException("Expected name. Message was: " + info.originalMessage);
 		return name;
 	}

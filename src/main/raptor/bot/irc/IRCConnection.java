@@ -25,6 +25,10 @@ public class IRCConnection {
 		clientMessageStream = new BufferedWriter(new OutputStreamWriter(tcpConnection.getOutputStream()));
 	}
 
+	public void pass(final String password) {
+		sendMessage("PASS %s\n", password);
+	}
+
 	public void user(final String username, final String realName) {
 		sendMessage("USER %s * * :%s\n", username, realName);
 	}
@@ -46,7 +50,7 @@ public class IRCConnection {
 	}
 
 	public void privmsg(final String target, final String message) {
-		sendMessage("PRIVMSG", target, message);
+		sendMessage("PRIVMSG %s :%s\n", target, message);
 	}
 
 	public Iterator<IrcMessage> getServerMessages() throws IOException {
@@ -56,6 +60,7 @@ public class IRCConnection {
 		String message;
 		while (serverMessageStream.ready()) {
 			message = serverMessageStream.readLine();
+			System.out.print("IRCConnection - getServerMessages - " + message);
 			serverMessages.add(IrcMessageParser.parseIrcMessage(message));
 		}
 
@@ -68,6 +73,7 @@ public class IRCConnection {
 
 	private void sendMessage(final String commandFormat, final Object... args) {
 		final String message = String.format(commandFormat, args);
+		System.out.println("IRCConnection - sendMessage - " + message);
 		try {
 			clientMessageStream.write(message);
 			clientMessageStream.flush();
