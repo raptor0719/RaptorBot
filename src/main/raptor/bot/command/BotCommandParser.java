@@ -3,6 +3,7 @@ package raptor.bot.command;
 import java.util.regex.Pattern;
 
 import raptor.bot.command.commands.BotCommand;
+import raptor.bot.command.commands.HelpCommand;
 import raptor.bot.command.commands.SoundCommand;
 
 public class BotCommandParser {
@@ -12,6 +13,8 @@ public class BotCommandParser {
 		switch (info.type) {
 			case Sound:
 				return new SoundCommand(info.sound);
+			case Help:
+				return new HelpCommand(info.commandHelp);
 			default:
 				return new BotCommand(info.unknownCommandString);
 		}
@@ -29,6 +32,9 @@ public class BotCommandParser {
 				case "sound":
 					parseSoundCommand(info);
 					break;
+				case "help":
+					parseHelpCommand(info);
+					break;
 				default:
 					info.unknownCommandString = commandWord;
 			}
@@ -40,6 +46,7 @@ public class BotCommandParser {
 	}
 
 	private static CommandInfo parseSoundCommand(final CommandInfo info) {
+		info.type = CommandType.Sound;
 		final String sound = info.remainingMessage.split(" ")[0];
 
 		if (!Pattern.matches("[a-zA-Z0-9_-]*", sound))
@@ -49,12 +56,24 @@ public class BotCommandParser {
 		return info;
 	}
 
+	private static CommandInfo parseHelpCommand(final CommandInfo info) {
+		info.type = CommandType.Help;
+		final String commandHelp = info.remainingMessage.split(" ")[0];
+
+		if (!Pattern.matches("[a-zA-Z0-9_-]*", commandHelp))
+			throw new RuntimeException("Malformed argument for help command was given.");
+
+		info.commandHelp = commandHelp;
+		return info;
+	}
+
 	private static class CommandInfo {
 		public final String originalMessage;
 		public String remainingMessage;
 
 		public CommandType type = CommandType.Unknown;
 		public String sound;
+		public String commandHelp;
 
 		public String unknownCommandString;
 
@@ -66,6 +85,7 @@ public class BotCommandParser {
 
 	private static enum CommandType {
 		Sound,
+		Help,
 		Unknown
 	}
 }
