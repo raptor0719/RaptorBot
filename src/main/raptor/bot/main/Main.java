@@ -15,32 +15,41 @@ public class Main {
 	private static final Map<String, String> sounds;
 
 	static {
+		final String soundDir = "C:\\Users\\short\\Documents\\RaptorBot\\sounds\\";
 		sounds = new HashMap<String, String>();
-		sounds.put("ynot", "C:\\Users\\short\\Documents\\RaptorBot\\sounds\\WC3-Peon-WhyNot.wav");
-		sounds.put("imdead", "C:\\Users\\short\\Documents\\RaptorBot\\sounds\\WC3-Peasant-ImDead.wav");
-		sounds.put("nice", "C:\\Users\\short\\Documents\\RaptorBot\\sounds\\WC3-Grunt-KindOfNice.wav");
-		sounds.put("death", "C:\\Users\\short\\Documents\\RaptorBot\\sounds\\WC3-BloodMage-Dead.wav");
-		sounds.put("engineer", "C:\\Users\\short\\Documents\\RaptorBot\\sounds\\WC3-BelfEngineer-ImAnEngineer.wav");
-		sounds.put("wanderer", "C:\\Users\\short\\Documents\\RaptorBot\\sounds\\WC3-Bandit-RoamerWanderer.wav");
-		sounds.put("moredots", "C:\\Users\\short\\Documents\\RaptorBot\\sounds\\OWA-MoreDotsMoreDots.wav");
-		sounds.put("dotsnow", "C:\\Users\\short\\Documents\\RaptorBot\\sounds\\OWA-MoreDotsNow.wav");
-		sounds.put("stopdots", "C:\\Users\\short\\Documents\\RaptorBot\\sounds\\OWA-StopDots.wav");
-		sounds.put("whodafuq", "C:\\Users\\short\\Documents\\RaptorBot\\sounds\\OWA-WhoTheWasThat.wav");
-		sounds.put("wtf", "C:\\Users\\short\\Documents\\RaptorBot\\sounds\\OWA-WTF.wav");
-		sounds.put("wtfshit", "C:\\Users\\short\\Documents\\RaptorBot\\sounds\\OWA-WTFShit.wav");
-		sounds.put("cmere", "C:\\Users\\short\\Documents\\RaptorBot\\sounds\\OWA-ComeHere.wav");
-		sounds.put("eff", "C:\\Users\\short\\Documents\\RaptorBot\\sounds\\OWA-Fuck.wav");
+
+		sounds.put("ynot", soundDir + "WC3-Peon-WhyNot.wav");
+		sounds.put("imdead", soundDir + "WC3-Peasant-ImDead.wav");
+		sounds.put("nice", soundDir + "WC3-Grunt-KindOfNice.wav");
+		sounds.put("death", soundDir + "WC3-BloodMage-Dead.wav");
+		sounds.put("engineer", soundDir + "WC3-BelfEngineer-ImAnEngineer.wav");
+		sounds.put("wanderer", soundDir + "WC3-Bandit-RoamerWanderer.wav");
+
+		sounds.put("moredots", soundDir + "OWA-MoreDotsMoreDots.wav");
+		sounds.put("dotsnow", soundDir + "OWA-MoreDotsNow.wav");
+		sounds.put("stopdots", soundDir + "OWA-StopDots.wav");
+		sounds.put("whodafuq", soundDir + "OWA-WhoTheWasThat.wav");
+		sounds.put("wtf", soundDir + "OWA-WTF.wav");
+		sounds.put("wtfshit", soundDir + "OWA-WTFShit.wav");
+		sounds.put("cmere", soundDir + "OWA-ComeHere.wav");
+		sounds.put("eff", soundDir + "OWA-Fuck.wav");
+
+		sounds.put("godlike", soundDir + "DOTA-Godlike.wav");
+		sounds.put("holyshit", soundDir + "DOTA-HolyShit.wav");
+		sounds.put("monsterkill", soundDir + "DOTA-MonsterKill.wav");
+		sounds.put("ultrakill", soundDir + "DOTA-UltraKill.wav");
+
+		sounds.put("freshmeat", soundDir + "DIABLO1-FreshMeat.wav");
+		sounds.put("hax", soundDir + "IdiotBox-Hax.wav");
+		sounds.put("victory", soundDir + "FF-Victory.wav");
+		sounds.put("fatality", soundDir + "MK-Fatality.wav");
 	}
 
 	public static void main(String[] args) {
-//		final String ip = "192.168.1.6";
 		final String ip = "irc.chat.twitch.tv";
 		final int port = 6667;
-//		final int port = 80;
 		final String user = "thequarterbot";
 		final String nick = user;
-//		final String channel = "#general";
-//		final String channel = "#tluu";
 //		final String channel = "#thequarterbot";
 		final String channel = "#raptor0719";
 
