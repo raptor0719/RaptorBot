@@ -28,7 +28,7 @@ public class RaptorBot {
 			return helpCommand(helpCommand.getCommand());
 		}
 
-		return "";
+		return "Invalid command given. " + helpCommand();
 	}
 
 	private String playSound(final String sound) {
