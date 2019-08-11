@@ -28,15 +28,12 @@ public class BotCommandParser {
 			final String commandWord = info.remainingMessage.split(" ")[0];
 			info.remainingMessage = info.remainingMessage.substring(info.remainingMessage.indexOf(" ") + 1);
 
-			switch (commandWord) {
-				case "sound":
-					parseSoundCommand(info);
-					break;
-				case "help":
-					parseHelpCommand(info);
-					break;
-				default:
-					info.unknownCommandString = commandWord;
+			if (CommandWords.SOUND.getWord().equals(commandWord)) {
+				parseSoundCommand(info);
+			} else if (CommandWords.SOUND.getWord().equals(commandWord)) {
+				parseHelpCommand(info);
+			} else {
+				info.unknownCommandString = commandWord;
 			}
 
 			return info;
