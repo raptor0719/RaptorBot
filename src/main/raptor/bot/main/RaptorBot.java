@@ -37,20 +37,18 @@ public class RaptorBot {
 				SoundPlayer.playSound(new File(soundPath));
 			} catch (Throwable t) {}
 		} else {
-			return helpCommand(BotCommand.SOUND_COMMAND_STRING);
+			return helpCommand(SoundCommand.COMMAND_WORD);
 		}
 		return "";
 	}
 
 	private String helpCommand(final String command) {
-		switch (command) {
-			case BotCommand.SOUND_COMMAND_STRING:
-				return buildSoundsList();
-			case BotCommand.HELP_COMMAND_STRING:
-			case "":
-				return buildCommandList();
-			default:
-				return "Unknown command given.";
+		if (SoundCommand.COMMAND_WORD.equals(command)) {
+			return buildSoundsList();
+		} else if (HelpCommand.COMMAND_WORD.equals(command) || "".equals(command)) {
+			return buildCommandList();
+		} else {
+			return "Unknown command given for help.";
 		}
 	}
 

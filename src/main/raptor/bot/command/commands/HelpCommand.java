@@ -1,10 +1,13 @@
 package raptor.bot.command.commands;
 
+import raptor.bot.command.CommandWords;
+
 public class HelpCommand extends BotCommand {
+	public static final String COMMAND_WORD = CommandWords.HELP.getWord();
 	private final String command;
 
 	public HelpCommand(final String command) {
-		super(BotCommand.HELP_COMMAND_STRING);
+		super(COMMAND_WORD);
 		this.command = command;
 	}
 
