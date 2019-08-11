@@ -60,7 +60,7 @@ public class IRCConnection {
 		String message;
 		while (serverMessageStream.ready()) {
 			message = serverMessageStream.readLine();
-			System.out.print("IRCConnection - getServerMessages - " + message);
+			System.out.println("IRCConnection - getServerMessages - " + message);
 			serverMessages.add(IrcMessageParser.parseIrcMessage(message));
 		}
 
@@ -73,7 +73,10 @@ public class IRCConnection {
 
 	private void sendMessage(final String commandFormat, final Object... args) {
 		final String message = String.format(commandFormat, args);
-		System.out.println("IRCConnection - sendMessage - " + message);
+		if (message.startsWith("PASS"))
+			System.out.print("IRCConnection - sendMessage - PASS ********\n");
+		else
+			System.out.print("IRCConnection - sendMessage - " + message);
 		try {
 			clientMessageStream.write(message);
 			clientMessageStream.flush();
