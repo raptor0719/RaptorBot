@@ -5,6 +5,10 @@ import java.util.regex.Pattern;
 import raptor.bot.command.commands.BotCommand;
 import raptor.bot.command.commands.HelpCommand;
 import raptor.bot.command.commands.SoundCommand;
+import raptor.bot.command.commands.alias.AliasCommand;
+import raptor.bot.command.commands.alias.AliasCreateCommand;
+import raptor.bot.command.commands.alias.AliasDeleteCommand;
+import raptor.bot.command.commands.alias.AliasListCommand;
 
 public class BotCommandParser {
 	public static BotCommand parseBotCommand(final String message) {
@@ -15,6 +19,16 @@ public class BotCommandParser {
 				return new SoundCommand(info.sound);
 			case Help:
 				return new HelpCommand(info.commandHelp);
+			case Alias:
+				return new AliasCommand();
+			case Alias_create:
+				return new AliasCreateCommand(info.alias, info.aliasedPhrase);
+			case Alias_delete:
+				return new AliasDeleteCommand(info.alias);
+			case Alias_list:
+				return new AliasListCommand();
+			case NotACommand:
+				return null;
 			default:
 				return new BotCommand(info.unknownCommandString);
 		}
@@ -30,13 +44,17 @@ public class BotCommandParser {
 
 			if (CommandWords.SOUND.getWord().equals(commandWord)) {
 				parseSoundCommand(info);
-			} else if (CommandWords.SOUND.getWord().equals(commandWord)) {
+			} else if (CommandWords.HELP.getWord().equals(commandWord)) {
 				parseHelpCommand(info);
+			} else if (CommandWords.ALIAS.getWord().equals(commandWord)) {
+				parseAliasCommand(info);
 			} else {
 				info.unknownCommandString = commandWord;
 			}
 
 			return info;
+		} else {
+			info.type = CommandType.NotACommand;
 		}
 
 		return info;
@@ -64,6 +82,29 @@ public class BotCommandParser {
 		return info;
 	}
 
+	private static CommandInfo parseAliasCommand(final CommandInfo info) {
+		final String actionWord = info.remainingMessage.split(" ")[0];
+		info.remainingMessage = info.remainingMessage.substring(info.remainingMessage.indexOf(" ") + 1);
+
+		if (AliasCreateCommand.SUB_COMMAND_WORD.equals(actionWord)) {
+			info.type = CommandType.Alias_create;
+			info.alias = info.remainingMessage.split(" ")[0];
+			info.remainingMessage = info.remainingMessage.substring(info.remainingMessage.indexOf(" ") + 1);
+			info.aliasedPhrase = info.remainingMessage;
+			info.remainingMessage = "";
+		} else if (AliasDeleteCommand.SUB_COMMAND_WORD.equals(actionWord)) {
+			info.type = CommandType.Alias_delete;
+			info.alias = info.remainingMessage.split(" ")[0];
+			info.remainingMessage = info.remainingMessage.substring(info.remainingMessage.indexOf(" ") + 1);
+		} else if (AliasListCommand.SUB_COMMAND_WORD.equals(actionWord)) {
+			info.type = CommandType.Alias_list;
+		} else {
+			info.type = CommandType.Alias;
+		}
+
+		return info;
+	}
+
 	private static class CommandInfo {
 		public final String originalMessage;
 		public String remainingMessage;
@@ -71,6 +112,9 @@ public class BotCommandParser {
 		public CommandType type = CommandType.Unknown;
 		public String sound;
 		public String commandHelp;
+
+		public String alias;
+		public String aliasedPhrase;
 
 		public String unknownCommandString;
 
@@ -81,8 +125,13 @@ public class BotCommandParser {
 	}
 
 	private static enum CommandType {
+		Alias,
+		Alias_create,
+		Alias_list,
+		Alias_delete,
 		Sound,
 		Help,
-		Unknown
+		Unknown,
+		NotACommand
 	}
 }

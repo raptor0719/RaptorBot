@@ -2,10 +2,16 @@ RaptorBot Command Grammar
 
 <bot-command> ::= !<command>
 
-<command> ::= <sound-command>
+<command> ::= <sound-command> | <alias-command>
 
 <sound-command> ::= sound <sound>
 
 <sound> ::= <arg>
+
+<alias-command> ::= alias <alias-action>
+
+<alias-action> ::= <alias-modify-action> <arg> <command> | list
+
+<alias-modify-action> ::= create | delete
 
 <arg> ::= REGEX("[a-zA-Z0-9_-]*")

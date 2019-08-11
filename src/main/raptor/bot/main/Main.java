@@ -13,6 +13,7 @@ import raptor.bot.irc.IRCClient;
 
 public class Main {
 	private static final Map<String, String> sounds;
+	private static final String aliasFile = "C:\\Users\\short\\Documents\\RaptorBot\\aliases.txt";
 
 	static {
 		final String soundDir = "C:\\Users\\short\\Documents\\RaptorBot\\sounds\\";
@@ -56,13 +57,15 @@ public class Main {
 		final String password = getOathToken();
 //		final IRCClient client = new IRCClient(ip, port, user, nick);
 		final IRCClient client = new IRCClient(ip, port, user, nick, password);
-		final RaptorBot bot = new RaptorBot(sounds);
+		final RaptorBot bot = new RaptorBot(sounds, aliasFile);
 
 		final long messageDelay = 1000L;
 		long lastMessageTime = 0L;
 
 		try {
+			System.out.println("Attempting connection...");
 			client.connect();
+			System.out.println("Connection success!");
 			client.joinChannel(channel);
 
 			while (true) {
