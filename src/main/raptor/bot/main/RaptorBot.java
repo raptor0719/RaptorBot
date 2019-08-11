@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Map;
 
 import raptor.bot.command.BotCommandParser;
+import raptor.bot.command.CommandWords;
 import raptor.bot.command.commands.BotCommand;
 import raptor.bot.command.commands.HelpCommand;
 import raptor.bot.command.commands.SoundCommand;
@@ -42,18 +43,22 @@ public class RaptorBot {
 		return "";
 	}
 
+	private String helpCommand() {
+		return helpCommand("");
+	}
+
 	private String helpCommand(final String command) {
 		if (SoundCommand.COMMAND_WORD.equals(command)) {
-			return buildSoundsList();
+			return "Usage '!sound <sound>'. " + buildSoundsList();
 		} else if (HelpCommand.COMMAND_WORD.equals(command) || "".equals(command)) {
-			return buildCommandList();
+			return "Use '!help <command>' for help for a specific command. " + buildCommandList();
 		} else {
-			return "Unknown command given for help.";
+			return "Unknown command given for help. " + helpCommand();
 		}
 	}
 
 	private String buildSoundsList() {
-		String soundList = "Usage '!sound <sound>'. Sounds List: ";
+		String soundList = "Sounds List: ";
 		for (final Map.Entry<String, String> e : sounds.entrySet()) {
 			soundList += e.getKey() + ", ";
 		}
@@ -61,6 +66,10 @@ public class RaptorBot {
 	}
 
 	private String buildCommandList() {
-		return "Use '!help <command>' for help for a specific command. The following is a list of commands: help, sound.";
+		String commandList = "The following is a list of commands: ";
+		for (final CommandWords c : CommandWords.values()) {
+			commandList += c.getWord() + ", ";
+		}
+		return commandList.substring(0, commandList.length() - 2) + ".";
 	}
 }
