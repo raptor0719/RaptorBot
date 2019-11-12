@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.Map;
 import java.util.Set;
 
+import raptor.bot.api.ITransformer;
 import raptor.bot.command.BotCommandParser;
 import raptor.bot.command.BotMethod;
 import raptor.bot.command.commands.BotCommand;
@@ -20,17 +21,19 @@ import raptor.bot.utils.SoundPlayer;
 public class RaptorBot {
 	private final Map<String, String> sounds;
 	private final AliasManager aliasManager;
+	private final ITransformer<ChatMessage, String> chatProcessor;
 
-	public RaptorBot(final Map<String, String> sounds, final String aliasFilePath) {
+	public RaptorBot(final Map<String, String> sounds, final String aliasFilePath, final ITransformer<ChatMessage, String> chatProcessor) {
 		this.sounds = sounds;
 		aliasManager = new AliasManager(aliasFilePath);
+		this.chatProcessor = chatProcessor;
 	}
 
 	public String message(final ChatMessage message) {
 		final BotCommand command = BotCommandParser.parseBotCommand(message.getMessage());
 
 		if (command == null) {
-			return "";
+			return chatProcessor.transform(message);
 		} else if (command instanceof SoundCommand) {
 			final SoundCommand soundCommand = (SoundCommand)command;
 			return playSound(soundCommand.getSound());

@@ -6,10 +6,14 @@ import java.io.IOException;
 import java.net.UnknownHostException;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
+import raptor.bot.api.ITransformer;
 import raptor.bot.irc.ChatMessage;
 import raptor.bot.irc.IRCClient;
+import raptor.bot.utils.TransformerPipe;
 
 public class Main {
 	private static final Map<String, String> sounds;
@@ -65,7 +69,7 @@ public class Main {
 		final String password = getOathToken();
 //		final IRCClient client = new IRCClient(ip, port, user, nick);
 		final IRCClient client = new IRCClient(ip, port, user, nick, password);
-		final RaptorBot bot = new RaptorBot(sounds, aliasFile);
+		final RaptorBot bot = new RaptorBot(sounds, aliasFile, getChatProcessor());
 
 		final long messageDelay = 1000L;
 		long lastMessageTime = 0L;
@@ -95,6 +99,38 @@ public class Main {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	private static ITransformer<ChatMessage, String> getChatProcessor() {
+		final ITransformer<ChatMessage, ChatMessage> wombatGreeter = new ITransformer<ChatMessage, ChatMessage>() {
+			final long timeBetweenGreetings = 3600000L;
+			long lastGreeting = -1;
+			@Override
+			public ChatMessage transform(final ChatMessage in) {
+				if (in == null)
+					return null;
+
+				if (in.getUser().toLowerCase().contains("wombat") && ((System.currentTimeMillis() - lastGreeting) >= timeBetweenGreetings || lastGreeting < 0)) {
+					lastGreeting = System.currentTimeMillis();
+					return new ChatMessage(null, "Welcome to the chat room!");
+				}
+
+				return null;
+			}
+		};
+
+		final List<ITransformer<ChatMessage, ChatMessage>> processors = new LinkedList<>();
+		processors.add(wombatGreeter);
+
+		final ITransformer<ChatMessage, ChatMessage> pipe = new TransformerPipe<ChatMessage>(processors);
+
+		return new ITransformer<ChatMessage, String>() {
+			@Override
+			public String transform(final ChatMessage in) {
+				final ChatMessage message = pipe.transform(in);
+				return (message == null) ? "" : message.getMessage();
+			}
+		};
 	}
 
 	private static String getOathToken() {
