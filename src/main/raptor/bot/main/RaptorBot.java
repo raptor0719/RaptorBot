@@ -78,9 +78,11 @@ public class RaptorBot {
 		if (command instanceof AliasCreateCommand) {
 			final AliasCreateCommand create = (AliasCreateCommand)command;
 			aliasManager.create(create.getAlias(), create.getAliasedCommand());
+			return "Created new alias.";
 		} else if (command instanceof AliasDeleteCommand) {
 			final AliasDeleteCommand delete = (AliasDeleteCommand)command;
 			aliasManager.delete(delete.getAlias());
+			return "Deleted alias.";
 		} else if (command instanceof AliasListCommand) {
 			return buildAliasList(aliasManager);
 		}
