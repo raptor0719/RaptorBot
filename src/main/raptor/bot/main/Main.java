@@ -51,11 +51,15 @@ public class Main {
 		sounds.put("weedoggie", soundDir + "MYTH2-Dwarf-WeeDoggie.wav");
 		sounds.put("casualty", soundDir + "MYTH2-Casualty.wav");
 
+		sounds.put("321", soundDir + "TS3-321GO.wav");
+		sounds.put("yousuck", soundDir + "TS3-YouSuck.wav");
+
 		sounds.put("casual", soundDir + "Casual.wav");
 		sounds.put("freshmeat", soundDir + "DIABLO1-FreshMeat.wav");
 		sounds.put("hax", soundDir + "IdiotBox-Hax.wav");
 		sounds.put("victory", soundDir + "FF-Victory.wav");
 		sounds.put("fatality", soundDir + "MK-Fatality.wav");
+		sounds.put("herb", soundDir + "AOE2-HerbLaugh.wav");
 	}
 
 	public static void main(String[] args) {
