@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Set;
 
 import raptor.bot.command.BotCommandParser;
-import raptor.bot.command.CommandWords;
+import raptor.bot.command.BotMethod;
 import raptor.bot.command.commands.BotCommand;
 import raptor.bot.command.commands.HelpCommand;
 import raptor.bot.command.commands.SoundCommand;
@@ -105,7 +105,7 @@ public class RaptorBot {
 
 	private String buildCommandList() {
 		String commandList = "The following is a list of commands: ";
-		for (final CommandWords c : CommandWords.values()) {
+		for (final BotMethod c : BotMethod.values()) {
 			commandList += c.getWord() + ", ";
 		}
 		return commandList.substring(0, commandList.length() - 2) + ". " + buildAliasList(aliasManager);

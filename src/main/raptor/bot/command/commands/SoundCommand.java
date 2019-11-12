@@ -1,9 +1,9 @@
 package raptor.bot.command.commands;
 
-import raptor.bot.command.CommandWords;
+import raptor.bot.command.BotMethod;
 
 public class SoundCommand extends BotCommand {
-	public static final String COMMAND_WORD = CommandWords.SOUND.getWord();
+	public static final String COMMAND_WORD = BotMethod.SOUND.getWord();
 	private final String sound;
 
 	public SoundCommand(final String sound) {
