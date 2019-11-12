@@ -10,7 +10,7 @@ import raptor.bot.irc.message.messages.NoticeMessage;
 import raptor.bot.irc.message.messages.NumericServerReplyMessage;
 import raptor.bot.irc.message.messages.PingMessage;
 
-public class IrcMessageParser {
+public class IRCMessageParser {
 	public static IrcMessage parseIrcMessage(final String message) {
 		final MessageInfo info = parseMessage(message);
 
@@ -148,8 +148,8 @@ public class IrcMessageParser {
 		public String channel;
 
 		public MessageInfo(final String message) {
-			this.originalMessage = message;
-			this.remainingMessage = message;
+			originalMessage = message;
+			remainingMessage = message;
 		}
 	}
 
