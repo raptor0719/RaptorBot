@@ -11,7 +11,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-import raptor.bot.irc.message.IrcMessageParser;
+import raptor.bot.irc.message.IRCMessageParser;
 import raptor.bot.irc.message.messages.IrcMessage;
 
 public class IRCConnection {
@@ -61,7 +61,7 @@ public class IRCConnection {
 		while (serverMessageStream.ready()) {
 			message = serverMessageStream.readLine();
 			System.out.println("IRCConnection - getServerMessages - " + message);
-			serverMessages.add(IrcMessageParser.parseIrcMessage(message));
+			serverMessages.add(IRCMessageParser.parseIrcMessage(message));
 		}
 
 		return serverMessages.iterator();
