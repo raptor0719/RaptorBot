@@ -75,7 +75,7 @@ public class Main {
 				while (messages.hasNext()) {
 					final ChatMessage message = messages.next();
 					System.out.println(message.getUser() + ": " + message.getMessage());
-					final String botResponse = bot.message(message.getUser(), message.getMessage());
+					final String botResponse = bot.message(message);
 					if (botResponse != null && !botResponse.isEmpty() && (System.currentTimeMillis() - lastMessageTime) >= messageDelay) {
 						client.sendMessage(botResponse, channel);
 						lastMessageTime = System.currentTimeMillis();

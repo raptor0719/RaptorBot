@@ -13,6 +13,7 @@ import raptor.bot.command.commands.alias.AliasCommand;
 import raptor.bot.command.commands.alias.AliasCreateCommand;
 import raptor.bot.command.commands.alias.AliasDeleteCommand;
 import raptor.bot.command.commands.alias.AliasListCommand;
+import raptor.bot.irc.ChatMessage;
 import raptor.bot.utils.AliasManager;
 import raptor.bot.utils.SoundPlayer;
 
@@ -22,11 +23,11 @@ public class RaptorBot {
 
 	public RaptorBot(final Map<String, String> sounds, final String aliasFilePath) {
 		this.sounds = sounds;
-		this.aliasManager = new AliasManager(aliasFilePath);
+		aliasManager = new AliasManager(aliasFilePath);
 	}
 
-	public String message(final String user, final String message) {
-		final BotCommand command = BotCommandParser.parseBotCommand(message);
+	public String message(final ChatMessage message) {
+		final BotCommand command = BotCommandParser.parseBotCommand(message.getMessage());
 
 		if (command == null) {
 			return "";
@@ -40,7 +41,7 @@ public class RaptorBot {
 			return aliasCommand((AliasCommand)command);
 		} else if (isAlias(command.getCommand())) {
 			final String aliasedCommand = aliasManager.getAliases().get(command.getCommand());
-			return message(user, aliasedCommand);
+			return message(new ChatMessage(message.getUser(), aliasedCommand));
 		}
 
 		return "Invalid command '" + command.getCommand() + "' given. " + helpCommand();
