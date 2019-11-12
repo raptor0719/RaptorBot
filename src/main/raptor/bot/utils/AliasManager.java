@@ -83,7 +83,7 @@ public class AliasManager {
 				throw new IOException("AliasManager - readAliasMappings - Alias mapping file could not be created.");
 			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file)));
 			for (final Map.Entry<String, String> e : aliasMap.entrySet()) {
-				writer.write(e.getKey() + " " + e.getValue());
+				writer.write(e.getKey() + " " + e.getValue() + "\n");
 			}
 		} catch (Throwable t) {
 			throw new RuntimeException(t);
