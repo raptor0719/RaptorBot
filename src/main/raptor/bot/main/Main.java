@@ -25,6 +25,8 @@ public class Main {
 		sounds.put("death", soundDir + "WC3-BloodMage-Dead.wav");
 		sounds.put("engineer", soundDir + "WC3-BelfEngineer-ImAnEngineer.wav");
 		sounds.put("wanderer", soundDir + "WC3-Bandit-RoamerWanderer.wav");
+		sounds.put("jobsdone", soundDir + "WC3-Peasant-JobsDone.wav");
+		sounds.put("taunt", soundDir + "WC3-Muradin-BestYouCanDo.wav");
 
 		sounds.put("moredots", soundDir + "OWA-MoreDotsMoreDots.wav");
 		sounds.put("dotsnow", soundDir + "OWA-MoreDotsNow.wav");
@@ -40,6 +42,12 @@ public class Main {
 		sounds.put("monsterkill", soundDir + "DOTA-MonsterKill.wav");
 		sounds.put("ultrakill", soundDir + "DOTA-UltraKill.wav");
 
+		sounds.put("chickens", soundDir + "MYTH2-ChickensAttack.wav");
+		sounds.put("doing", soundDir + "MYTH2-Dwarf-DOOOIIINNNGGG.wav");
+		sounds.put("weedoggie", soundDir + "MYTH2-Dwarf-WeeDoggie.wav");
+		sounds.put("casualty", soundDir + "MYTH2-Casualty.wav");
+
+		sounds.put("casual", soundDir + "Casual.wav");
 		sounds.put("freshmeat", soundDir + "DIABLO1-FreshMeat.wav");
 		sounds.put("hax", soundDir + "IdiotBox-Hax.wav");
 		sounds.put("victory", soundDir + "FF-Victory.wav");
