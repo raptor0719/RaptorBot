@@ -1,7 +1,7 @@
 package raptor.bot.utils;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
@@ -19,7 +19,7 @@ public class SoundPlayer {
 	 * @throws IOException
 	 * @throws LineUnavailableException
 	 */
-	public static void playSound(final File audio) throws UnsupportedAudioFileException,IOException,LineUnavailableException {
+	public static void playSound(final InputStream audio) throws UnsupportedAudioFileException,IOException,LineUnavailableException {
 		final AudioInputStream input = AudioSystem.getAudioInputStream(audio);
 		final Clip clip = AudioSystem.getClip();
 		clip.open(input);
@@ -37,6 +37,7 @@ public class SoundPlayer {
 		}
 
 		clip.close();
+		input.close();
 	}
 
 	private static class BlockingLineListener implements LineListener {

@@ -1,9 +1,9 @@
 package raptor.bot.main;
 
-import java.io.File;
-import java.util.Map;
+import java.io.InputStream;
 import java.util.Set;
 
+import raptor.bot.api.ISoundManager;
 import raptor.bot.api.ITransformer;
 import raptor.bot.command.BotCommandParser;
 import raptor.bot.command.BotMethod;
@@ -19,12 +19,12 @@ import raptor.bot.utils.AliasManager;
 import raptor.bot.utils.SoundPlayer;
 
 public class RaptorBot {
-	private final Map<String, String> sounds;
+	private final ISoundManager<String> soundManager;
 	private final AliasManager aliasManager;
 	private final ITransformer<ChatMessage, String> chatProcessor;
 
-	public RaptorBot(final Map<String, String> sounds, final String aliasFilePath, final ITransformer<ChatMessage, String> chatProcessor) {
-		this.sounds = sounds;
+	public RaptorBot(final ISoundManager<String> soundManager, final String aliasFilePath, final ITransformer<ChatMessage, String> chatProcessor) {
+		this.soundManager = soundManager;
 		aliasManager = new AliasManager(aliasFilePath);
 		this.chatProcessor = chatProcessor;
 	}
@@ -51,11 +51,14 @@ public class RaptorBot {
 	}
 
 	private String playSound(final String sound) {
-		final String soundPath = sounds.get(sound);
-		if (soundPath != null) {
+		final InputStream audio = soundManager.getSound(sound);
+		if (audio != null) {
 			try {
-				SoundPlayer.playSound(new File(soundPath));
-			} catch (Throwable t) {}
+				System.out.println("Playing sound: " + sound);
+				SoundPlayer.playSound(audio);
+			} catch (Throwable t) {
+				System.out.println("The SoundPlayer threw an error with the following message: " + t.getMessage());
+			}
 		} else {
 			return helpCommand(SoundCommand.COMMAND_WORD);
 		}
@@ -100,8 +103,8 @@ public class RaptorBot {
 
 	private String buildSoundsList() {
 		String soundList = "Sounds List: ";
-		for (final Map.Entry<String, String> e : sounds.entrySet()) {
-			soundList += e.getKey() + ", ";
+		for (final String s : soundManager.getKeys()) {
+			soundList += s + ", ";
 		}
 		return soundList.substring(0, soundList.length() - 2) + ".";
 	}
