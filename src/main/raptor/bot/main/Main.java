@@ -13,6 +13,7 @@ import java.util.Map;
 import raptor.bot.api.ITransformer;
 import raptor.bot.irc.ChatMessage;
 import raptor.bot.irc.IRCClient;
+import raptor.bot.utils.AliasManager;
 import raptor.bot.utils.SoundManager;
 import raptor.bot.utils.TransformerPipe;
 
@@ -74,7 +75,7 @@ public class Main {
 		final String password = getOathToken();
 //		final IRCClient client = new IRCClient(ip, port, user, nick);
 		final IRCClient client = new IRCClient(ip, port, user, nick, password);
-		final RaptorBot bot = new RaptorBot(new SoundManager(sounds), aliasFile, getChatProcessor());
+		final RaptorBot bot = new RaptorBot(new SoundManager(sounds), new AliasManager(aliasFile), getChatProcessor());
 
 		final long messageDelay = 1000L;
 		long lastMessageTime = 0L;

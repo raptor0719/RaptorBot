@@ -12,7 +12,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class AliasManager {
+import raptor.bot.api.IAliasManager;
+
+public class AliasManager implements IAliasManager {
 	private final String filePath;
 	private Map<String, String> aliasMap;
 
@@ -21,6 +23,7 @@ public class AliasManager {
 		this.aliasMap = Collections.unmodifiableMap(readAliasMappings(filePath));
 	}
 
+	@Override
 	public void create(final String alias, final String phrase) {
 		final Map<String, String> modifiableMap = new HashMap<String, String>(aliasMap);
 		modifiableMap.put(alias, phrase);
@@ -29,6 +32,7 @@ public class AliasManager {
 		System.out.println("AliasManager - create - new alias '" + alias + "' was create for phrase: " + phrase);
 	}
 
+	@Override
 	public void delete(final String alias) {
 		final Map<String, String> modifiableMap = new HashMap<String, String>(aliasMap);
 		modifiableMap.remove(alias);
@@ -37,8 +41,19 @@ public class AliasManager {
 		System.out.println("AliasManager - delete - alias '" + alias + "' was deleted.");
 	}
 
-	public Map<String, String> getAliases() {
-		return aliasMap;
+	@Override
+	public boolean isAlias(final String alias) {
+		return aliasMap.containsKey(alias);
+	}
+
+	@Override
+	public String getAliasedPhrase(final String alias) {
+		return aliasMap.get(alias);
+	}
+
+	@Override
+	public Iterable<String> getAliases() {
+		return aliasMap.keySet();
 	}
 
 	private Map<String, String> readAliasMappings(final String filePath) {

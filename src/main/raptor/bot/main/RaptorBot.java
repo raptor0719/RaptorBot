@@ -1,8 +1,8 @@
 package raptor.bot.main;
 
 import java.io.InputStream;
-import java.util.Set;
 
+import raptor.bot.api.IAliasManager;
 import raptor.bot.api.ISoundManager;
 import raptor.bot.api.ITransformer;
 import raptor.bot.command.BotCommandParser;
@@ -15,17 +15,16 @@ import raptor.bot.command.commands.alias.AliasCreateCommand;
 import raptor.bot.command.commands.alias.AliasDeleteCommand;
 import raptor.bot.command.commands.alias.AliasListCommand;
 import raptor.bot.irc.ChatMessage;
-import raptor.bot.utils.AliasManager;
 import raptor.bot.utils.SoundPlayer;
 
 public class RaptorBot {
 	private final ISoundManager<String> soundManager;
-	private final AliasManager aliasManager;
+	private final IAliasManager aliasManager;
 	private final ITransformer<ChatMessage, String> chatProcessor;
 
-	public RaptorBot(final ISoundManager<String> soundManager, final String aliasFilePath, final ITransformer<ChatMessage, String> chatProcessor) {
+	public RaptorBot(final ISoundManager<String> soundManager, final IAliasManager aliasManager, final ITransformer<ChatMessage, String> chatProcessor) {
 		this.soundManager = soundManager;
-		aliasManager = new AliasManager(aliasFilePath);
+		this.aliasManager = aliasManager;
 		this.chatProcessor = chatProcessor;
 	}
 
@@ -42,8 +41,8 @@ public class RaptorBot {
 			return helpCommand(helpCommand.getCommand());
 		} else if (command instanceof AliasCommand) {
 			return aliasCommand((AliasCommand)command);
-		} else if (isAlias(command.getCommand())) {
-			final String aliasedCommand = aliasManager.getAliases().get(command.getCommand());
+		} else if (aliasManager.isAlias(command.getCommand())) {
+			final String aliasedCommand = aliasManager.getAliasedPhrase(command.getCommand());
 			return message(new ChatMessage(message.getUser(), aliasedCommand));
 		}
 
@@ -91,14 +90,10 @@ public class RaptorBot {
 			aliasManager.delete(delete.getAlias());
 			return "Deleted alias.";
 		} else if (command instanceof AliasListCommand) {
-			return buildAliasList(aliasManager);
+			return buildAliasList();
 		}
 
 		return helpCommand(AliasCommand.COMMAND_WORD);
-	}
-
-	private boolean isAlias(final String command) {
-		return aliasManager.getAliases().containsKey(command);
 	}
 
 	private String buildSoundsList() {
@@ -114,17 +109,18 @@ public class RaptorBot {
 		for (final BotMethod c : BotMethod.values()) {
 			commandList += c.getWord() + ", ";
 		}
-		return commandList.substring(0, commandList.length() - 2) + ". " + buildAliasList(aliasManager);
+		return commandList.substring(0, commandList.length() - 2) + ". " + buildAliasList();
 	}
 
-	private String buildAliasList(final AliasManager manager) {
-		final Set<String> keySet = manager.getAliases().keySet();
-		if (keySet.size() < 1)
+	private String buildAliasList() {
+		final Iterable<String> aliases = aliasManager.getAliases();
+
+		if (!aliases.iterator().hasNext())
 			return "";
+
 		String aliasList = "The following is a list of aliases: ";
-		for (final String s : keySet) {
+		for (final String s : aliases)
 			aliasList += s + ", ";
-		}
 		return aliasList.substring(0, aliasList.length() - 2) + ".";
 	}
 }
