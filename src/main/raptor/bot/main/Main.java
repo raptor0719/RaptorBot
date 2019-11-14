@@ -1,9 +1,14 @@
 package raptor.bot.main;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -17,10 +22,12 @@ import raptor.bot.test.utils.TestWindow;
 import raptor.bot.utils.AliasManager;
 import raptor.bot.utils.SoundManager;
 import raptor.bot.utils.TransformerPipe;
+import raptor.bot.utils.words.PartOfSpeech;
 
 public class Main {
 	private static final Map<String, String> sounds;
 	private static final String aliasFile = "C:\\Users\\short\\Documents\\RaptorBot\\aliases.txt";
+	private static final String wordBankFile = "C:\\Users\\short\\Documents\\RaptorBot\\madlibs\\words\\part-of-speech.txt";
 
 	static {
 		final String soundDir = "C:\\Users\\short\\Documents\\RaptorBot\\sounds\\";
@@ -66,6 +73,7 @@ public class Main {
 	}
 
 	public static void main(String[] args) {
+		extractWords(wordBankFile);
 		if (args.length >= 1 && Boolean.parseBoolean(args[0])) {
 			new TestWindow(new RaptorBot(new SoundManager(sounds), new AliasManager(aliasFile), getChatProcessor()));
 			return;
@@ -157,6 +165,85 @@ public class Main {
 				if (reader != null)
 					reader.close();
 			} catch (IOException e) {}
+		}
+	}
+
+	private static Map<PartOfSpeech, List<String>> extractWords(final String wordFilePath) {
+		final File wordFile = new File(wordFilePath);
+		FileInputStream fis = null;
+		try {
+			fis = new FileInputStream(wordFile);
+			final BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
+
+			final Map<PartOfSpeech, List<String>> wordBank = new HashMap<PartOfSpeech, List<String>>();
+			final PartOfSpeech[] partsOfSpeech = PartOfSpeech.values();
+
+			for (final PartOfSpeech pos : partsOfSpeech)
+				wordBank.put(pos, new ArrayList<String>());
+
+			String line = reader.readLine();
+			while (line != null) {
+				final String[] data = line.split("	");
+				line = reader.readLine();
+
+				if (data.length < 2)
+					continue;
+
+				final String word = data[0];
+				final boolean[] used = new boolean[partsOfSpeech.length];
+				Arrays.fill(used, false);
+
+				for (final char c : data[1].toCharArray()) {
+					switch (c) {
+						case 'N':
+						case 'h':
+							wordBank.get(PartOfSpeech.Noun).add(word);
+							used[PartOfSpeech.Noun.ordinal()] = true;
+						case 'p':
+							wordBank.get(PartOfSpeech.Plural).add(word);
+							used[PartOfSpeech.Plural.ordinal()] = true;
+						case 'V':
+						case 't':
+						case 'i':
+							wordBank.get(PartOfSpeech.Verb).add(word);
+							used[PartOfSpeech.Verb.ordinal()] = true;
+						case 'A':
+							wordBank.get(PartOfSpeech.Adjective).add(word);
+							used[PartOfSpeech.Adjective.ordinal()] = true;
+						case 'v':
+							wordBank.get(PartOfSpeech.Adverb).add(word);
+							used[PartOfSpeech.Adverb.ordinal()] = true;
+						case 'C':
+							wordBank.get(PartOfSpeech.Conjunction).add(word);
+							used[PartOfSpeech.Conjunction.ordinal()] = true;
+						case 'P':
+							wordBank.get(PartOfSpeech.Preposition).add(word);
+							used[PartOfSpeech.Preposition.ordinal()] = true;
+						case '!':
+							wordBank.get(PartOfSpeech.Interjection).add(word);
+							used[PartOfSpeech.Interjection.ordinal()] = true;
+						case 'r':
+							wordBank.get(PartOfSpeech.Pronoun).add(word);
+							used[PartOfSpeech.Pronoun.ordinal()] = true;
+						case 'D':
+							wordBank.get(PartOfSpeech.DefiniteArticle).add(word);
+							used[PartOfSpeech.DefiniteArticle.ordinal()] = true;
+						case 'I':
+							wordBank.get(PartOfSpeech.IndefiniteArticle).add(word);
+							used[PartOfSpeech.IndefiniteArticle.ordinal()] = true;
+						case 'o':
+						default:
+					}
+				}
+			}
+			reader.close();
+			return wordBank;
+		} catch (Throwable t) {
+			throw new RuntimeException(t);
+		} finally {
+			try {
+				fis.close();
+			} catch (Throwable t) {}
 		}
 	}
 }
