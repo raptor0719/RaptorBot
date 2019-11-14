@@ -13,6 +13,7 @@ import java.util.Map;
 import raptor.bot.api.ITransformer;
 import raptor.bot.irc.ChatMessage;
 import raptor.bot.irc.IRCClient;
+import raptor.bot.test.utils.TestWindow;
 import raptor.bot.utils.AliasManager;
 import raptor.bot.utils.SoundManager;
 import raptor.bot.utils.TransformerPipe;
@@ -65,6 +66,11 @@ public class Main {
 	}
 
 	public static void main(String[] args) {
+		if (args.length >= 1 && Boolean.parseBoolean(args[0])) {
+			new TestWindow(new RaptorBot(new SoundManager(sounds), new AliasManager(aliasFile), getChatProcessor()));
+			return;
+		}
+
 		final String ip = "irc.chat.twitch.tv";
 		final int port = 6667;
 		final String user = "thequarterbot";
