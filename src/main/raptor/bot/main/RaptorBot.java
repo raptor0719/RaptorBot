@@ -3,6 +3,7 @@ package raptor.bot.main;
 import java.io.InputStream;
 
 import raptor.bot.api.IAliasManager;
+import raptor.bot.api.IMadlibManager;
 import raptor.bot.api.ISoundManager;
 import raptor.bot.api.ITransformer;
 import raptor.bot.command.BotCommandParser;
@@ -14,6 +15,9 @@ import raptor.bot.command.commands.alias.AliasCommand;
 import raptor.bot.command.commands.alias.AliasCreateCommand;
 import raptor.bot.command.commands.alias.AliasDeleteCommand;
 import raptor.bot.command.commands.alias.AliasListCommand;
+import raptor.bot.command.commands.madlib.MadlibCommand;
+import raptor.bot.command.commands.madlib.MadlibFillCommand;
+import raptor.bot.command.commands.madlib.MadlibFormatCommand;
 import raptor.bot.irc.ChatMessage;
 import raptor.bot.utils.SoundPlayer;
 
@@ -21,11 +25,13 @@ public class RaptorBot {
 	private final ISoundManager<String> soundManager;
 	private final IAliasManager aliasManager;
 	private final ITransformer<ChatMessage, String> chatProcessor;
+	private final IMadlibManager madlibManager;
 
-	public RaptorBot(final ISoundManager<String> soundManager, final IAliasManager aliasManager, final ITransformer<ChatMessage, String> chatProcessor) {
+	public RaptorBot(final ISoundManager<String> soundManager, final IAliasManager aliasManager, final ITransformer<ChatMessage, String> chatProcessor, final IMadlibManager madlibManager) {
 		this.soundManager = soundManager;
 		this.aliasManager = aliasManager;
 		this.chatProcessor = chatProcessor;
+		this.madlibManager = madlibManager;
 	}
 
 	public String message(final ChatMessage message) {
@@ -44,6 +50,8 @@ public class RaptorBot {
 		} else if (aliasManager.isAlias(command.getCommand())) {
 			final String aliasedCommand = aliasManager.getAliasedPhrase(command.getCommand());
 			return message(new ChatMessage(message.getUser(), aliasedCommand));
+		} else if (command instanceof MadlibCommand) {
+			return madlibCommand((MadlibCommand) command);
 		}
 
 		return "Invalid command '" + command.getCommand() + "' given. " + helpCommand();
@@ -75,6 +83,8 @@ public class RaptorBot {
 			return "Use '!help <command>' for help for a specific command. " + buildCommandList();
 		} else if (AliasCommand.COMMAND_WORD.equals(command)) {
 			return "Use '!alias list' to list all aliases. Use '!alias create <alias> <command>' to create a new alias or replace an existing alias. Use '!alias delete <alias>' to delete an alias";
+		} else if (MadlibCommand.COMMAND_WORD.equals(command)) {
+			return "Use '!madlib fill <phrase>' to fill the marked-up phrase with random words. Use '!madlib format' for info on formatting your phrase.";
 		} else {
 			return "Unknown command given for help. " + helpCommand();
 		}
@@ -94,6 +104,17 @@ public class RaptorBot {
 		}
 
 		return helpCommand(AliasCommand.COMMAND_WORD);
+	}
+
+	private String madlibCommand(final MadlibCommand command) {
+		if (command instanceof MadlibFillCommand) {
+			final MadlibFillCommand fill = (MadlibFillCommand)command;
+			return madlibManager.fill(fill.getPhrase());
+		} else if (command instanceof MadlibFormatCommand) {
+			return "The following specifies a replacement string for the given word type. The format is '<keyword>=<part-of-speech>'. Use the <keyword> in your phrase. " + madlibManager.getFormat();
+		} else {
+			return helpCommand(command.getCommand());
+		}
 	}
 
 	private String buildSoundsList() {

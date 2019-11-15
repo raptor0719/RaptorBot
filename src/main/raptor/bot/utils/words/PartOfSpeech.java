@@ -4,6 +4,8 @@ public enum PartOfSpeech {
 	Noun("n"),
 	Plural("pl"),
 	Verb("v"),
+	VerbTransitive("vt"),
+	VerbIntransitive("vi"),
 	Adjective("a"),
 	Adverb("adv"),
 	Pronoun("pn"),

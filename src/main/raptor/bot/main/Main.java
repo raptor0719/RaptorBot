@@ -20,9 +20,11 @@ import raptor.bot.irc.ChatMessage;
 import raptor.bot.irc.IRCClient;
 import raptor.bot.test.utils.TestWindow;
 import raptor.bot.utils.AliasManager;
+import raptor.bot.utils.MadlibManager;
 import raptor.bot.utils.SoundManager;
 import raptor.bot.utils.TransformerPipe;
 import raptor.bot.utils.words.PartOfSpeech;
+import raptor.bot.utils.words.WordBank;
 
 public class Main {
 	private static final Map<String, String> sounds;
@@ -75,7 +77,7 @@ public class Main {
 	public static void main(String[] args) {
 		extractWords(wordBankFile);
 		if (args.length >= 1 && Boolean.parseBoolean(args[0])) {
-			new TestWindow(new RaptorBot(new SoundManager(sounds), new AliasManager(aliasFile), getChatProcessor()));
+			new TestWindow(new RaptorBot(new SoundManager(sounds), new AliasManager(aliasFile), getChatProcessor(), new MadlibManager(getWordBank(wordBankFile))));
 			return;
 		}
 
@@ -89,7 +91,7 @@ public class Main {
 		final String password = getOathToken();
 //		final IRCClient client = new IRCClient(ip, port, user, nick);
 		final IRCClient client = new IRCClient(ip, port, user, nick, password);
-		final RaptorBot bot = new RaptorBot(new SoundManager(sounds), new AliasManager(aliasFile), getChatProcessor());
+		final RaptorBot bot = new RaptorBot(new SoundManager(sounds), new AliasManager(aliasFile), getChatProcessor(), new MadlibManager(getWordBank(wordBankFile)));
 
 		final long messageDelay = 1000L;
 		long lastMessageTime = 0L;
@@ -168,6 +170,10 @@ public class Main {
 		}
 	}
 
+	private static WordBank getWordBank(final String wordFilePath) {
+		return new WordBank(extractWords(wordFilePath));
+	}
+
 	private static Map<PartOfSpeech, List<String>> extractWords(final String wordFilePath) {
 		final File wordFile = new File(wordFilePath);
 		FileInputStream fis = null;
@@ -199,38 +205,55 @@ public class Main {
 						case 'h':
 							wordBank.get(PartOfSpeech.Noun).add(word);
 							used[PartOfSpeech.Noun.ordinal()] = true;
+							break;
 						case 'p':
 							wordBank.get(PartOfSpeech.Plural).add(word);
 							used[PartOfSpeech.Plural.ordinal()] = true;
+							break;
 						case 'V':
-						case 't':
-						case 'i':
 							wordBank.get(PartOfSpeech.Verb).add(word);
 							used[PartOfSpeech.Verb.ordinal()] = true;
+							break;
+						case 't':
+							wordBank.get(PartOfSpeech.VerbTransitive).add(word);
+							used[PartOfSpeech.Verb.ordinal()] = true;
+							break;
+						case 'i':
+							wordBank.get(PartOfSpeech.VerbIntransitive).add(word);
+							used[PartOfSpeech.Verb.ordinal()] = true;
+							break;
 						case 'A':
 							wordBank.get(PartOfSpeech.Adjective).add(word);
 							used[PartOfSpeech.Adjective.ordinal()] = true;
+							break;
 						case 'v':
 							wordBank.get(PartOfSpeech.Adverb).add(word);
 							used[PartOfSpeech.Adverb.ordinal()] = true;
+							break;
 						case 'C':
 							wordBank.get(PartOfSpeech.Conjunction).add(word);
 							used[PartOfSpeech.Conjunction.ordinal()] = true;
+							break;
 						case 'P':
 							wordBank.get(PartOfSpeech.Preposition).add(word);
 							used[PartOfSpeech.Preposition.ordinal()] = true;
+							break;
 						case '!':
 							wordBank.get(PartOfSpeech.Interjection).add(word);
 							used[PartOfSpeech.Interjection.ordinal()] = true;
+							break;
 						case 'r':
 							wordBank.get(PartOfSpeech.Pronoun).add(word);
 							used[PartOfSpeech.Pronoun.ordinal()] = true;
+							break;
 						case 'D':
 							wordBank.get(PartOfSpeech.DefiniteArticle).add(word);
 							used[PartOfSpeech.DefiniteArticle.ordinal()] = true;
+							break;
 						case 'I':
 							wordBank.get(PartOfSpeech.IndefiniteArticle).add(word);
 							used[PartOfSpeech.IndefiniteArticle.ordinal()] = true;
+							break;
 						case 'o':
 						default:
 					}

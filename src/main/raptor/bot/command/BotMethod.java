@@ -7,6 +7,9 @@ import raptor.bot.command.commands.SoundCommand;
 import raptor.bot.command.commands.alias.AliasCreateCommand;
 import raptor.bot.command.commands.alias.AliasDeleteCommand;
 import raptor.bot.command.commands.alias.AliasListCommand;
+import raptor.bot.command.commands.madlib.MadlibCommand;
+import raptor.bot.command.commands.madlib.MadlibFillCommand;
+import raptor.bot.command.commands.madlib.MadlibFormatCommand;
 
 public enum BotMethod {
 	SOUND("sound", new IParser<BotCommand>() {
@@ -34,6 +37,22 @@ public enum BotMethod {
 					return new AliasDeleteCommand(remaining.split(" ")[0]);
 				default:
 					return new AliasListCommand();
+			}
+		}
+	}),
+	MADLIB("madlib", new IParser<BotCommand>() {
+		@Override
+		public BotCommand parse(final String s) {
+			final String action = s.split(" ")[0];
+			final String remaining = s.substring(s.indexOf(" ") + 1);
+
+			switch (action) {
+				case MadlibFillCommand.SUB_COMMAND_WORD:
+					return new MadlibFillCommand(remaining);
+				case MadlibFormatCommand.SUB_COMMAND_WORD:
+					return new MadlibFormatCommand();
+				default:
+					return new MadlibCommand("");
 			}
 		}
 	});

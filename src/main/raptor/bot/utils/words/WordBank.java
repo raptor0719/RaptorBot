@@ -12,7 +12,7 @@ public class WordBank {
 
 	public String getRandomWord(final PartOfSpeech pos) {
 		final List<String> wordList = words.get(pos);
-		return wordList.get(getIntInRange(wordList.size()));
+		return (wordList.size() <= 0) ? "" : wordList.get(getIntInRange(wordList.size()));
 	}
 
 	private int getIntInRange(final int upperExclusive) {
