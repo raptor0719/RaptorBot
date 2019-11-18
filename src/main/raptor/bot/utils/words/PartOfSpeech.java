@@ -6,12 +6,12 @@ public enum PartOfSpeech {
 	Verb("v"),
 	VerbTransitive("vt"),
 	VerbIntransitive("vi"),
-	Adjective("a"),
+	Adjective("adj"),
 	Adverb("adv"),
 	Pronoun("pn"),
 	Conjunction("con"),
 	Interjection("int"),
-	Preposition("pre"),
+	Preposition("prep"),
 	DefiniteArticle("d"),
 	IndefiniteArticle("i");
 
