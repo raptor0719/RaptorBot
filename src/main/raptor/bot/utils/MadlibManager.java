@@ -35,10 +35,30 @@ public class MadlibManager implements IMadlibManager {
 
 	private String replace(final String s, final String searchStr, final String replacement) {
 		String intermediate = s;
-		intermediate = replaceAtBeginning(intermediate, searchStr, replacement);
-		intermediate = replaceAtEnd(intermediate, searchStr, replacement);
-		intermediate = replaceInMiddle(intermediate, searchStr, replacement);
-		intermediate = replaceSolo(intermediate, searchStr, replacement);
+		String result = replaceAtBeginning(intermediate, searchStr, replacement);
+		if (!result.equals(intermediate)) {
+			return result;
+		}
+		intermediate = result;
+
+		result = replaceAtEnd(intermediate, searchStr, replacement);
+		if (!result.equals(intermediate)) {
+			return result;
+		}
+		intermediate = result;
+
+		result = replaceInMiddle(intermediate, searchStr, replacement);
+		if (!result.equals(intermediate)) {
+			return result;
+		}
+		intermediate = result;
+
+		result = replaceSolo(intermediate, searchStr, replacement);
+		if (!result.equals(intermediate)) {
+			return result;
+		}
+		intermediate = result;
+
 		return intermediate;
 	}
 
