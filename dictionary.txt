@@ -10,15 +10,22 @@
 #
 ####
 
+GTX 1090 Ti	n
 Lord's prayer	n
+PC	n
 TV	n
 alcohol	n
+anole	n
 apple	n
 ass	n
 aunt	n
 back	n
+beholder	n
+bird	n
 blanket	n
+blind	n
 boat	n
+boot	n
 box	n
 boy	n
 boyfriend	n
@@ -26,25 +33,40 @@ brother	n
 bush	n
 cabinet	n
 cake	n
+canola oil	n
 car	n
+card	n
 cashmoney	n
 castle	n
 cat	n
+cat tower	n
 ceiling	n
 cereal	n
 chasis	n
 child	n
+clock	n
+coin	n
+community	n
+computer	n
 cousin	n
+cover	n
 crabapple	n
+creep	n
 crest	n
 dad	n
 dark	n
 day	n
 diaper	n
+dictionary	n
 dog	n
+doggo	n
 dosh	n
+dragon	n
+drawer	n
 drive	n
+duck	n
 eighth	n
+enemy	n
 extra	n
 faucet	n
 fifth	n
@@ -52,33 +74,55 @@ finger	n
 first	n
 floor	n
 flower	n
+foe	n
 food	n
 foot	n
 fourth	n
 game	n
+gate	n
 girl	n
 girlfriend	n
 glass	n
+gnoll	n
+gold	n
+good boy	n
 grass	n
 grits	n
+gun	n
 half-brother	n
 half-sister	n
 hand	n
 handbrake	n
 handjob	n
+hardware	n
+health	n
+heated blanket	n
 hickey	n
 house	n
+it	n
 jump	n
 keep	n
+keyboard	n
 kiss	n
 kitty	n
+kobold	n
+komodo dragon	n
 left	n
 leg	n
+litter	n
+lizard	n
+lumber	n
+lumberjack	n
 lunchbox	n
 make	n
 man	n
+middle	n
+mine	n
+miner	n
 mom	n
 money	n
+monitor	n
+monitor lizard	n
 more	n
 motorcycle	n
 moustache	n
@@ -86,34 +130,61 @@ nephew	n
 niece	n
 ninth	n
 oatmeal	n
+oil	n
+olive oil	n
+orc	n
 other	n
 palm tree	n
+peace	n
 pen	n
 people	n
 person	n
+piano	n
+pidgeon	n
+piece	n
 pillow	n
 pineapple	n
+pistol	n
 place	n
+plane	n
 plant	n
 plush	n
 rear	n
+rifle	n
 right	n
 roof	n
 run	n
+scratch pad	n
+screen	n
 second	n
 seesaw	n
 seventh	n
 shirt	n
+shoe	n
+shoelace	n
+silver	n
 sister	n
 sixth	n
+skink	n
+sliver	n
+software	n
 step-brother	n
 step-sister	n
 stereo	n
+stone	n
 stove	n
+stream	n
+streamer	n
+string	n
+suit	n
+sun	n
 taffer	n
+task	n
 teapot	n
 television	n
 tenth	n
+that	n
+thermal paste	n
 thigh	n
 thing	n
 third	n
@@ -127,15 +198,23 @@ transvestite	n
 tree	n
 two	n
 uncle	n
+underscore	n
 university	n
+vegetable oil	n
 video	n
 vocabulary	n
 wanker	n
+weeb	n
+weirdo	n
 well	n
 widget	n
 window	n
+wing	n
+wingsuit	n
+wizard	n
 woman	n
 wood	n
+woodcutter	n
 work	n
 year	n
 yesteryear	n
