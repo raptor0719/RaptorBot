@@ -9,6 +9,7 @@
 # !	interjection
 #
 ####
+
 OK	a
 a	a
 abandoned	a
@@ -5615,6 +5616,7 @@ cool	v
 cooperate	v
 coordinate	v
 cope	v
+copulate	v
 copy	v
 corner	v
 correct	v
@@ -6624,6 +6626,7 @@ peel	v
 peep	v
 peer	v
 pelt	v
+pepper	v
 perceive	v
 perch	v
 perfect	v
@@ -6979,6 +6982,7 @@ rustle	v
 sack	v
 sail	v
 salivate	v
+salt	v
 salute	v
 salvage	v
 sashay	v
@@ -7636,6 +7640,7 @@ withhold	v
 withstand	v
 witness	v
 wobble	v
+wololo	v
 wonder	v
 woo	v
 work	v
@@ -7693,11 +7698,36 @@ was	pv
 went	pv
 worked	pv
 
+Aragorn	n
+Bilbo Baggins	n
+Boromir	n
+Faramir	n
+Frodo	n
 GTX 1090 Ti	n
+Galadriel	n
+Gandalf	n
+Gandalf the Grey	n
+Gandalf the White	n
+Gimli	n
+Gollum	n
+Gríma Wormtongue	n
+Legolas	n
+Lich King	n
 Lord's prayer	n
+Meriadoc "Merry" Brandybuck	n
+Mr. Potato Head	n
+Mrs. Potato Head	n
+Nazgûl	n
 PC	n
+Peregrin "Pippin" Took	n
+Samwise "Sam" Gamgee	n
+Saruman the White	n
+Sauron	n
+Smeagol	n
 TV	n
 Thunderfury, Blessed Blade of the Windseeker	n
+Théoden	n
+Witch-king of Angmar	n
 a	n
 ability	n
 abroad	n
@@ -7734,6 +7764,7 @@ alcohol	n
 alternative	n
 ambition	n
 amount	n
+anal	n
 analysis	n
 analyst	n
 anger	n
@@ -7975,6 +8006,8 @@ coat	n
 code	n
 coffee	n
 coin	n
+coition	n
+coitus	n
 coke	n
 cold	n
 collar	n
@@ -8026,6 +8059,7 @@ conversation	n
 convert	n
 cook	n
 cookie	n
+copulation	n
 copy	n
 corner	n
 cost	n
@@ -8176,8 +8210,10 @@ egg	n
 eighth	n
 election	n
 elevator	n
+elf	n
 emergency	n
 emotion	n
+emperor	n
 emphasis	n
 employ	n
 employee	n
@@ -8299,6 +8335,7 @@ function	n
 funeral	n
 funny	n
 future	n
+führer	n
 gain	n
 game	n
 gap	n
@@ -8320,6 +8357,7 @@ glaive	n
 glass	n
 glove	n
 gnoll	n
+gnome	n
 go	n
 goal	n
 god	n
@@ -8356,6 +8394,7 @@ hair	n
 halberd	n
 half	n
 half-brother	n
+half-orc	n
 half-sister	n
 hall	n
 hand	n
@@ -8445,6 +8484,7 @@ instruction	n
 insurance	n
 intention	n
 interaction	n
+intercourse	n
 interest	n
 internal	n
 international	n
@@ -8511,6 +8551,7 @@ leave	n
 lecture	n
 left	n
 leg	n
+lego lass	n
 length	n
 lesson	n
 let	n
@@ -8636,6 +8677,7 @@ mouth	n
 move	n
 movie	n
 mud	n
+murloc	n
 muscle	n
 music	n
 naginata	n
@@ -8735,9 +8777,11 @@ pay	n
 payment	n
 peace	n
 peak	n
+peasant	n
 pen	n
 penalty	n
 pension	n
+peon	n
 people	n
 percentage	n
 perception	n
@@ -8781,6 +8825,8 @@ platform	n
 play	n
 player	n
 pleasure	n
+pleb	n
+plebian	n
 plenty	n
 plush	n
 poem	n
@@ -9172,6 +9218,7 @@ summer	n
 sun	n
 supermarket	n
 support	n
+surf	n
 surgery	n
 surprise	n
 surround	n
@@ -9288,6 +9335,7 @@ unit	n
 university	n
 upper	n
 upstairs	n
+uruk-hai	n
 use	n
 user	n
 usual	n
@@ -9379,7 +9427,38 @@ you	n
 young	n
 youth	n
 zone	n
+Éomer	n
+Éowyn	n
 
+Aragorn	N
+Bilbo Baggins	N
 Bob	N
+Boromir	N
+Faramir	N
+Frodo	N
+Galadriel	N
+Gandalf	N
+Gandalf the Grey	N
+Gandalf the White	N
 Garfunkel	N
+Gimli	N
+Gollum	N
+Gríma Wormtongue	N
 House	N
+Legolas	N
+Meriadoc "Merry" Brandybuck	N
+Mr. Potato Head	N
+Mrs. Potato Head	N
+Peregrin "Pippin" Took	N
+Samwise Gamgee	N
+Saruman the White	N
+Sauron	N
+Smeagol	N
+The Lich King	N
+The One Ring	N
+The Two Ring	N
+The Witch-king of Angmar	N
+Théoden	N
+Éomer	N
+Éowyn	N
+
