@@ -14,23 +14,34 @@ GTX 1090 Ti	n
 Lord's prayer	n
 PC	n
 TV	n
+Thunderfury, Blessed Blade of the Windseeker	n
 alcohol	n
 anole	n
+apology	n
 apple	n
 ass	n
+attribute	n
 aunt	n
+axe	n
 back	n
+bastard sword	n
 beholder	n
 bird	n
+blade	n
+blademaster	n
 blanket	n
 blind	n
+blizzard	n
 boat	n
 boot	n
 box	n
 boy	n
 boyfriend	n
+broadsword	n
 brother	n
+building	n
 bush	n
+butterknife	n
 cabinet	n
 cake	n
 canola oil	n
@@ -45,19 +56,30 @@ cereal	n
 chasis	n
 child	n
 clock	n
+cloud	n
 coin	n
+coke	n
 community	n
 computer	n
+continent	n
+copy	n
+country	n
+couple	n
 cousin	n
 cover	n
 crabapple	n
 creep	n
 crest	n
 dad	n
+dairy farm	n
+dairy farmer	n
 dark	n
 day	n
+desert	n
+dessert	n
 diaper	n
 dictionary	n
+die	n
 dog	n
 doggo	n
 dosh	n
@@ -65,13 +87,19 @@ dragon	n
 drawer	n
 drive	n
 duck	n
+ear	n
 eighth	n
 enemy	n
+epidermis	n
 extra	n
+eye	n
+fam	n
+farmer	n
 faucet	n
 fifth	n
 finger	n
 first	n
+fjord	n
 floor	n
 flower	n
 foe	n
@@ -82,13 +110,19 @@ game	n
 gate	n
 girl	n
 girlfriend	n
+glaive	n
 glass	n
 gnoll	n
+god	n
 gold	n
+good	n
 good boy	n
 grass	n
 grits	n
 gun	n
+hail	n
+hair	n
+halberd	n
 half-brother	n
 half-sister	n
 hand	n
@@ -99,18 +133,28 @@ health	n
 heated blanket	n
 hickey	n
 house	n
+husband	n
+island	n
+isle	n
 it	n
+item	n
 jump	n
+katana	n
 keep	n
 keyboard	n
 kiss	n
 kitty	n
+knife	n
 kobold	n
 komodo dragon	n
+lamp	n
 left	n
 leg	n
+light	n
+lightbulb	n
 litter	n
 lizard	n
+longsword	n
 lumber	n
 lumberjack	n
 lunchbox	n
@@ -119,29 +163,42 @@ man	n
 middle	n
 mine	n
 miner	n
+mirror	n
 mom	n
 money	n
 monitor	n
 monitor lizard	n
 more	n
 motorcycle	n
+mountain	n
 moustache	n
+mouth	n
+naginata	n
 nephew	n
 niece	n
+ninja	n
 ninth	n
+nose	n
 oatmeal	n
+ocean	n
 oil	n
 olive oil	n
+one	n
 orc	n
 other	n
+pair	n
 palm tree	n
+path	n
 peace	n
 pen	n
 people	n
 person	n
 piano	n
+pick	n
+pickaxe	n
 pidgeon	n
 piece	n
+pike	n
 pillow	n
 pineapple	n
 pistol	n
@@ -149,25 +206,44 @@ place	n
 plane	n
 plant	n
 plush	n
+property	n
+rail spike	n
+railroad	n
+real estate	n
+reaper	n
 rear	n
+reference	n
 rifle	n
 right	n
+river	n
 roof	n
 run	n
 scratch pad	n
 screen	n
+scythe	n
+sea	n
 second	n
 seesaw	n
+sensei	n
+server	n
 seventh	n
+shield	n
 shirt	n
 shoe	n
 shoelace	n
+shortsword	n
+sickle	n
 silver	n
 sister	n
 sixth	n
+skin	n
 skink	n
+sleet	n
 sliver	n
+snow	n
 software	n
+spear	n
+statistic	n
 step-brother	n
 step-sister	n
 stereo	n
@@ -175,9 +251,11 @@ stone	n
 stove	n
 stream	n
 streamer	n
+strike	n
 string	n
 suit	n
 sun	n
+sword	n
 taffer	n
 task	n
 teapot	n
@@ -194,8 +272,11 @@ tire iron	n
 tissue	n
 toe	n
 tongue	n
+tornado	n
+train	n
 transvestite	n
 tree	n
+triplet	n
 two	n
 uncle	n
 underscore	n
@@ -208,6 +289,7 @@ weeb	n
 weirdo	n
 well	n
 widget	n
+wife	n
 window	n
 wing	n
 wingsuit	n
