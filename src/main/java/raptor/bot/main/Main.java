@@ -64,7 +64,7 @@ public class Main {
 		sounds.put("casualty", soundDir + "MYTH2-Casualty.wav");
 
 		sounds.put("321", soundDir + "TS3-321GO.wav");
-		sounds.put("yousuck", soundDir + "TS3-YouSuck.wav");
+		sounds.put("usuck", soundDir + "TS3-YouSuck.wav");
 
 		sounds.put("casual", soundDir + "Casual.wav");
 		sounds.put("freshmeat", soundDir + "DIABLO1-FreshMeat.wav");
