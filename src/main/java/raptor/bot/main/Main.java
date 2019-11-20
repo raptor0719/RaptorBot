@@ -72,6 +72,8 @@ public class Main {
 		sounds.put("victory", soundDir + "FF-Victory.wav");
 		sounds.put("fatality", soundDir + "MK-Fatality.wav");
 		sounds.put("herb", soundDir + "AOE2-HerbLaugh.wav");
+		sounds.put("distraction", soundDir + "SPONGEBOB-UglyDistraction.wav");
+		sounds.put("ouch", soundDir + "SPONGEBOB-Ouch.wav");
 	}
 
 	public static void main(String[] args) {
