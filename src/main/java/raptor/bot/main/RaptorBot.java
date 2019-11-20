@@ -78,7 +78,7 @@ public class RaptorBot {
 
 	private String helpCommand(final String command) {
 		if (SoundCommand.COMMAND_WORD.equals(command)) {
-			return "Usage '!sound <sound>'. " + buildSoundsList();
+			return "Usage '!<sound>' or '!sound <sound>'. " + buildSoundsList();
 		} else if (HelpCommand.COMMAND_WORD.equals(command) || "".equals(command)) {
 			return "Use '!help <command>' for help for a specific command. " + buildCommandList();
 		} else if (AliasCommand.COMMAND_WORD.equals(command)) {
@@ -130,7 +130,7 @@ public class RaptorBot {
 		for (final BotMethod c : BotMethod.values()) {
 			commandList += c.getWord() + ", ";
 		}
-		return commandList.substring(0, commandList.length() - 2) + ". " + buildAliasList();
+		return commandList.substring(0, commandList.length() - 2) + ".";
 	}
 
 	private String buildAliasList() {
