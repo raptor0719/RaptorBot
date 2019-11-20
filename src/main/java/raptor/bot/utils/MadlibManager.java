@@ -63,7 +63,7 @@ public class MadlibManager implements IMadlibManager {
 	}
 
 	private String replaceAtBeginning(final String s, final String pattern, final String replacement) {
-		return s.replaceFirst(String.format("^%s([^a-zA-Z0-9])", pattern), replacement + "$1");
+		return s.replaceFirst(String.format("^%s(.)", pattern), replacement + "$1");
 	}
 
 	private String replaceAtEnd(final String s, final String pattern, final String replacement) {
@@ -71,7 +71,7 @@ public class MadlibManager implements IMadlibManager {
 	}
 
 	private String replaceInMiddle(final String s, final String pattern, final String replacement) {
-		return s.replaceFirst(String.format("([^a-zA-Z0-9])%s([^a-zA-Z0-9])", pattern), "$1" + replacement + "$2");
+		return s.replaceFirst(String.format("([^a-zA-Z0-9])%s(.)", pattern), "$1" + replacement + "$2");
 	}
 
 	private String replaceSolo(final String s, final String pattern, final String replacement) {
