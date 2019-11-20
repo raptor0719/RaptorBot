@@ -6048,10 +6048,7 @@ forecast	v
 foretell	v
 forewarn	v
 forge	v
-forgeaddress	v
-forgeerase	v
 forget	v
-forgewrite	v
 forgive	v
 form	v
 forsake	v

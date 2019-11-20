@@ -29,7 +29,7 @@ import raptor.bot.utils.words.WordBank;
 public class Main {
 	private static final Map<String, String> sounds;
 	private static final String aliasFile = "C:\\Users\\short\\Documents\\RaptorBot\\aliases.txt";
-	private static final String wordBankFile = "C:\\Users\\short\\Documents\\RaptorBot\\madlibs\\words\\part-of-speech.txt";
+	private static final String wordBankFile = "C:\\Users\\short\\Documents\\GitHub\\RaptorBot\\src\\main\\resources\\dictionary.txt";
 
 	static {
 		final String soundDir = "C:\\Users\\short\\Documents\\RaptorBot\\sounds\\";
@@ -192,69 +192,43 @@ public class Main {
 				final String[] data = line.split("	");
 				line = reader.readLine();
 
-				if (data.length < 2)
+				if (data.length < 2 || data[0].startsWith("#"))
 					continue;
 
 				final String word = data[0];
 				final boolean[] used = new boolean[partsOfSpeech.length];
 				Arrays.fill(used, false);
 
-				for (final char c : data[1].toCharArray()) {
+				for (final String c : data[1].split(",")) {
 					switch (c) {
-						case 'N':
-						case 'h':
+						case "n":
 							wordBank.get(PartOfSpeech.Noun).add(word);
 							used[PartOfSpeech.Noun.ordinal()] = true;
 							break;
-						case 'p':
-							wordBank.get(PartOfSpeech.Plural).add(word);
-							used[PartOfSpeech.Plural.ordinal()] = true;
+						case "N":
+							wordBank.get(PartOfSpeech.PeopleNoun).add(word);
+							used[PartOfSpeech.PeopleNoun.ordinal()] = true;
 							break;
-						case 'V':
-							wordBank.get(PartOfSpeech.Verb).add(word);
-							used[PartOfSpeech.Verb.ordinal()] = true;
+						case "v":
+							wordBank.get(PartOfSpeech.PresentVerb).add(word);
+							used[PartOfSpeech.PresentVerb.ordinal()] = true;
 							break;
-						case 't':
-							wordBank.get(PartOfSpeech.VerbTransitive).add(word);
-							used[PartOfSpeech.Verb.ordinal()] = true;
+						case "pv":
+							wordBank.get(PartOfSpeech.PastVerb).add(word);
+							used[PartOfSpeech.PastVerb.ordinal()] = true;
 							break;
-						case 'i':
-							wordBank.get(PartOfSpeech.VerbIntransitive).add(word);
-							used[PartOfSpeech.Verb.ordinal()] = true;
-							break;
-						case 'A':
+						case "a":
 							wordBank.get(PartOfSpeech.Adjective).add(word);
 							used[PartOfSpeech.Adjective.ordinal()] = true;
 							break;
-						case 'v':
+						case "adv":
 							wordBank.get(PartOfSpeech.Adverb).add(word);
 							used[PartOfSpeech.Adverb.ordinal()] = true;
 							break;
-						case 'C':
-							wordBank.get(PartOfSpeech.Conjunction).add(word);
-							used[PartOfSpeech.Conjunction.ordinal()] = true;
-							break;
-						case 'P':
-							wordBank.get(PartOfSpeech.Preposition).add(word);
-							used[PartOfSpeech.Preposition.ordinal()] = true;
-							break;
-						case '!':
+						case "!":
 							wordBank.get(PartOfSpeech.Interjection).add(word);
 							used[PartOfSpeech.Interjection.ordinal()] = true;
 							break;
-						case 'r':
-							wordBank.get(PartOfSpeech.Pronoun).add(word);
-							used[PartOfSpeech.Pronoun.ordinal()] = true;
-							break;
-						case 'D':
-							wordBank.get(PartOfSpeech.DefiniteArticle).add(word);
-							used[PartOfSpeech.DefiniteArticle.ordinal()] = true;
-							break;
-						case 'I':
-							wordBank.get(PartOfSpeech.IndefiniteArticle).add(word);
-							used[PartOfSpeech.IndefiniteArticle.ordinal()] = true;
-							break;
-						case 'o':
 						default:
 					}
 				}

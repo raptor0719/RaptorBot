@@ -2,18 +2,12 @@ package raptor.bot.utils.words;
 
 public enum PartOfSpeech {
 	Noun("n"),
-	Plural("pl"),
-	Verb("v"),
-	VerbTransitive("vt"),
-	VerbIntransitive("vi"),
+	PeopleNoun("N"),
+	PresentVerb("v"),
+	PastVerb("pv"),
 	Adjective("adj"),
 	Adverb("adv"),
-	Pronoun("pn"),
-	Conjunction("con"),
-	Interjection("int"),
-	Preposition("prep"),
-	DefiniteArticle("d"),
-	IndefiniteArticle("i");
+	Interjection("int");
 
 	private final String id;
 
