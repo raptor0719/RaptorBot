@@ -20,6 +20,7 @@ import raptor.bot.irc.ChatMessage;
 import raptor.bot.irc.IRCClient;
 import raptor.bot.test.utils.TestWindow;
 import raptor.bot.utils.AliasManager;
+import raptor.bot.utils.ChatDatastoreManager;
 import raptor.bot.utils.MadlibManager;
 import raptor.bot.utils.SoundManager;
 import raptor.bot.utils.TransformerPipe;
@@ -104,12 +105,20 @@ public class Main {
 			System.out.println("Connection success!");
 			client.joinChannel(channel);
 
+			final ChatDatastoreManager chatDatastore = new ChatDatastoreManager();
 			while (true) {
 				client.process();
 
 				final Iterator<ChatMessage> messages = client.getMessages(channel);
 				while (messages.hasNext()) {
 					final ChatMessage message = messages.next();
+
+					try {
+						chatDatastore.storeMessage(channel.substring(1), message.getUser().split("!")[0], message.getMessage(), System.currentTimeMillis());
+					} catch (Throwable t) {
+						System.err.println(t);
+					}
+
 					System.out.println(message.getUser() + ": " + message.getMessage());
 					final String botResponse = bot.message(message);
 					if (botResponse != null && !botResponse.isEmpty() && (System.currentTimeMillis() - lastMessageTime) >= messageDelay) {
