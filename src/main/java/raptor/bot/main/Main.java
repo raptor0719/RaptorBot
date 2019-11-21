@@ -67,14 +67,16 @@ public class Main {
 		sounds.put("321", soundDir + "TS3-321GO.wav");
 		sounds.put("usuck", soundDir + "TS3-YouSuck.wav");
 
+		sounds.put("ugliness", soundDir + "SPONGEBOB-UglyDistraction.wav");
+		sounds.put("ouch", soundDir + "SPONGEBOB-Ouch.wav");
+		sounds.put("rectangles", soundDir + "SPONGEBOB-Rectangles.wav");
+
 		sounds.put("casual", soundDir + "Casual.wav");
 		sounds.put("freshmeat", soundDir + "DIABLO1-FreshMeat.wav");
 		sounds.put("hax", soundDir + "IdiotBox-Hax.wav");
 		sounds.put("victory", soundDir + "FF-Victory.wav");
 		sounds.put("fatality", soundDir + "MK-Fatality.wav");
 		sounds.put("herb", soundDir + "AOE2-HerbLaugh.wav");
-		sounds.put("distraction", soundDir + "SPONGEBOB-UglyDistraction.wav");
-		sounds.put("ouch", soundDir + "SPONGEBOB-Ouch.wav");
 	}
 
 	public static void main(String[] args) {
