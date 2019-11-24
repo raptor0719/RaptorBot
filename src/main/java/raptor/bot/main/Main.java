@@ -33,9 +33,12 @@ public class Main {
 	private static final String wordBankFile = "C:\\Users\\short\\Documents\\GitHub\\RaptorBot\\src\\main\\resources\\dictionary.txt";
 
 	public static void main(String[] args) {
+		final ChatDatastoreManager chatDatastore = new ChatDatastoreManager();
+		final RaptorBot bot = new RaptorBot(new SoundManager(soundsFile), new AliasManager(aliasFile), getChatProcessor(), new MadlibManager(getWordBank(wordBankFile)), chatDatastore);
+
 		extractWords(wordBankFile);
 		if (args.length >= 1 && Boolean.parseBoolean(args[0])) {
-			new TestWindow(new RaptorBot(new SoundManager(soundsFile), new AliasManager(aliasFile), getChatProcessor(), new MadlibManager(getWordBank(wordBankFile))));
+			new TestWindow(bot);
 			return;
 		}
 
@@ -49,7 +52,6 @@ public class Main {
 		final String password = getOathToken();
 //		final IRCClient client = new IRCClient(ip, port, user, nick);
 		final IRCClient client = new IRCClient(ip, port, user, nick, password);
-		final RaptorBot bot = new RaptorBot(new SoundManager(soundsFile), new AliasManager(aliasFile), getChatProcessor(), new MadlibManager(getWordBank(wordBankFile)));
 
 		final long messageDelay = 1000L;
 		long lastMessageTime = 0L;
@@ -60,7 +62,6 @@ public class Main {
 			System.out.println("Connection success!");
 			client.joinChannel(channel);
 
-			final ChatDatastoreManager chatDatastore = new ChatDatastoreManager();
 			while (true) {
 				client.process();
 

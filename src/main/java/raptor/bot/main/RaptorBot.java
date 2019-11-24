@@ -9,6 +9,7 @@ import raptor.bot.api.ITransformer;
 import raptor.bot.command.BotCommandParser;
 import raptor.bot.command.BotMethod;
 import raptor.bot.command.commands.BotCommand;
+import raptor.bot.command.commands.ChatStatsCommand;
 import raptor.bot.command.commands.HelpCommand;
 import raptor.bot.command.commands.SoundCommand;
 import raptor.bot.command.commands.alias.AliasCommand;
@@ -19,6 +20,7 @@ import raptor.bot.command.commands.madlib.MadlibCommand;
 import raptor.bot.command.commands.madlib.MadlibFillCommand;
 import raptor.bot.command.commands.madlib.MadlibFormatCommand;
 import raptor.bot.irc.ChatMessage;
+import raptor.bot.utils.ChatDatastoreManager;
 import raptor.bot.utils.SoundPlayer;
 
 public class RaptorBot {
@@ -26,12 +28,14 @@ public class RaptorBot {
 	private final IAliasManager aliasManager;
 	private final ITransformer<ChatMessage, String> chatProcessor;
 	private final IMadlibManager madlibManager;
+	private final ChatDatastoreManager chatDatastore;
 
-	public RaptorBot(final ISoundManager<String> soundManager, final IAliasManager aliasManager, final ITransformer<ChatMessage, String> chatProcessor, final IMadlibManager madlibManager) {
+	public RaptorBot(final ISoundManager<String> soundManager, final IAliasManager aliasManager, final ITransformer<ChatMessage, String> chatProcessor, final IMadlibManager madlibManager, final ChatDatastoreManager chatDatastore) {
 		this.soundManager = soundManager;
 		this.aliasManager = aliasManager;
 		this.chatProcessor = chatProcessor;
 		this.madlibManager = madlibManager;
+		this.chatDatastore = chatDatastore;
 	}
 
 	public String message(final ChatMessage message) {
@@ -52,6 +56,8 @@ public class RaptorBot {
 			return message(new ChatMessage(message.getUser(), aliasedCommand));
 		} else if (command instanceof MadlibCommand) {
 			return madlibCommand((MadlibCommand) command);
+		} else if (command instanceof ChatStatsCommand) {
+			return "Total messages sent: " + chatDatastore.getTotalMessageCount();
 		}
 
 		return "Invalid command '" + command.getCommand() + "' given. " + helpCommand();

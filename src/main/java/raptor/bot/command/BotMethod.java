@@ -2,6 +2,7 @@ package raptor.bot.command;
 
 import raptor.bot.api.IParser;
 import raptor.bot.command.commands.BotCommand;
+import raptor.bot.command.commands.ChatStatsCommand;
 import raptor.bot.command.commands.HelpCommand;
 import raptor.bot.command.commands.SoundCommand;
 import raptor.bot.command.commands.alias.AliasCreateCommand;
@@ -54,6 +55,12 @@ public enum BotMethod {
 				default:
 					return new MadlibCommand("");
 			}
+		}
+	}),
+	CHAT_STATS("chatstats", new IParser<BotCommand>() {
+		@Override
+		public BotCommand parse(final String s) {
+			return new ChatStatsCommand();
 		}
 	});
 
