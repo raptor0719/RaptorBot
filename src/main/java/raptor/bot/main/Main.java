@@ -3,7 +3,6 @@ package raptor.bot.main;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.UnknownHostException;
@@ -28,35 +27,29 @@ import raptor.bot.utils.words.PartOfSpeech;
 import raptor.bot.utils.words.WordBank;
 
 public class Main {
-	private static final String soundsFile = "C:\\Users\\short\\Documents\\RaptorBot\\sounds\\sounds.properties";
-	private static final String aliasFile = "C:\\Users\\short\\Documents\\RaptorBot\\aliases.txt";
-	private static final String wordBankFile = "C:\\Users\\short\\Documents\\GitHub\\RaptorBot\\src\\main\\resources\\dictionary.txt";
-
 	public static void main(String[] args) {
-		final ChatDatastoreManager chatDatastore = new ChatDatastoreManager();
-		final RaptorBot bot = new RaptorBot(new SoundManager(soundsFile), new AliasManager(aliasFile), getChatProcessor(), new MadlibManager(getWordBank(wordBankFile)), chatDatastore);
+		BotConfig config = null;
+		try {
+			config = new BotConfig(new FileInputStream(new File("raptorbot.properties")));
+		} catch (final IOException e) {
+			throw new RuntimeException("An error occured while building the configuration.", e);
+		}
 
-		extractWords(wordBankFile);
+		final ChatDatastoreManager chatDatastore = new ChatDatastoreManager(config.getChatDatastoreSqlConnectionURL(), config.getChatDatastoreSqlSchema(), config.getChatDatastoreSqlTable());
+		final RaptorBot bot = new RaptorBot(new SoundManager(config.getSoundsFilePath()), new AliasManager(config.getAliasFilePath()), getChatProcessor(), new MadlibManager(getWordBank(config.getDictionaryFilePath())), chatDatastore);
+
 		if (args.length >= 1 && Boolean.parseBoolean(args[0])) {
 			new TestWindow(bot);
 			return;
 		}
 
-		final String ip = "irc.chat.twitch.tv";
-		final int port = 6667;
-		final String user = "thequarterbot";
-		final String nick = user;
-//		final String channel = "#thequarterbot";
-		final String channel = "#raptor0719";
+		final IRCClient client = new IRCClient(config.getIrcIp(), config.getIrcPort(), config.getIrcUser(), config.getIrcUser(), config.getIrcPassword());
 
-		final String password = getOathToken();
-//		final IRCClient client = new IRCClient(ip, port, user, nick);
-		final IRCClient client = new IRCClient(ip, port, user, nick, password);
-
-		final long messageDelay = 1000L;
+		final long messageDelay = config.getBotMessageCooldown();
 		long lastMessageTime = 0L;
 
 		try {
+			final String channel = config.getIrcChannel();
 			System.out.println("Attempting connection...");
 			client.connect();
 			System.out.println("Connection success!");
@@ -125,21 +118,6 @@ public class Main {
 				return (message == null) ? "" : message.getMessage();
 			}
 		};
-	}
-
-	private static String getOathToken() {
-		BufferedReader reader = null;
-		try {
-			reader = new BufferedReader(new FileReader("C:\\Users\\short\\Documents\\RaptorBot\\oauthtoken.txt"));
-			return reader.readLine();
-		} catch (Throwable t) {
-			throw new RuntimeException(t);
-		} finally {
-			try {
-				if (reader != null)
-					reader.close();
-			} catch (IOException e) {}
-		}
 	}
 
 	private static WordBank getWordBank(final String wordFilePath) {

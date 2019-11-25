@@ -9,13 +9,19 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ChatDatastoreManager {
-	private static final String connectionUrl = "jdbc:sqlserver://192.168.1.6:1280;databaseName=master;user=raptorbot;password=raptorbot";
-
-	private static final String SCHEMA_NAME = "dbo";
-	private static final String TABLE_NAME = "ChatLog";
 	private static final String COLUMNS = "Channel, Chatter, ChatMessage, MessageTimestamp";
 
 	private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
+
+	private final String connectionUrl;
+	private final String schemaName;
+	private final String tableName;
+
+	public ChatDatastoreManager(final String connectionUrl, final String schemaName, final String tableName) {
+		this.connectionUrl = connectionUrl;
+		this.schemaName = schemaName;
+		this.tableName = tableName;
+	}
 
 	public void storeMessage(final String channel, final String user, final String message, final long timestamp) {
 		try {
@@ -43,12 +49,12 @@ public class ChatDatastoreManager {
 	}
 
 	private String getStoreMessageStatement(final String channel, final String user, final String message, final long timestamp) {
-		return "INSERT INTO " + SCHEMA_NAME + "." + TABLE_NAME + " (" + COLUMNS + ") VALUES (" +
+		return "INSERT INTO " + schemaName + "." + tableName + " (" + COLUMNS + ") VALUES (" +
 				quotes(channel) + ", " + quotes(user) + ", " + quotes(escapeSingleQuote(message)) + ", " + quotes(sdf.format(new Date(timestamp))) + ");";
 	}
 
 	private String getTotalMessageCountStatement() {
-		return "SELECT COUNT(*) FROM " + SCHEMA_NAME + "." + TABLE_NAME + ";";
+		return "SELECT COUNT(*) FROM " + schemaName + "." + tableName + ";";
 	}
 
 	private String quotes(final String s) {
