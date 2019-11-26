@@ -30,7 +30,10 @@ public class Main {
 	public static void main(String[] args) {
 		BotConfig config = null;
 		try {
-			config = new BotConfig(new FileInputStream(new File("raptorbot.properties")));
+			if (args.length >= 2)
+				config = new BotConfig(new FileInputStream(new File(args[1])));
+			else
+				config = new BotConfig(new FileInputStream(new File("raptorbot.properties")));
 		} catch (final IOException e) {
 			throw new RuntimeException("An error occured while building the configuration.", e);
 		}
