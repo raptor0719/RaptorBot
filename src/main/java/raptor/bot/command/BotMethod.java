@@ -16,19 +16,19 @@ public enum BotMethod {
 	SOUND("sound", new IParser<BotCommand>() {
 		@Override
 		public BotCommand parse(final String s) {
-			return new SoundCommand(s.split(" ")[0]);
+			return new SoundCommand(s.split(" ")[0].toLowerCase());
 		}
 	}),
 	HELP("help", new IParser<BotCommand>() {
 		@Override
 		public BotCommand parse(final String s) {
-			return new HelpCommand(s.split(" ")[0]);
+			return new HelpCommand(s.split(" ")[0].toLowerCase());
 		}
 	}),
 	ALIAS("alias", new IParser<BotCommand>() {
 		@Override
 		public BotCommand parse(final String s) {
-			final String action = s.split(" ")[0];
+			final String action = s.split(" ")[0].toLowerCase();
 			final String remaining = s.substring(s.indexOf(" ") + 1);
 
 			switch (action) {
@@ -44,7 +44,7 @@ public enum BotMethod {
 	MADLIB("madlib", new IParser<BotCommand>() {
 		@Override
 		public BotCommand parse(final String s) {
-			final String action = s.split(" ")[0];
+			final String action = s.split(" ")[0].toLowerCase();
 			final String remaining = s.substring(s.indexOf(" ") + 1);
 
 			switch (action) {

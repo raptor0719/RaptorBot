@@ -7,7 +7,7 @@ public class BotCommandParser {
 		try {
 			if (message.startsWith("!")) {
 				final String cleaned = message.trim().substring(1);
-				final String commandWord = cleaned.split(" ")[0];
+				final String commandWord = cleaned.split(" ")[0].toLowerCase();
 				final String params = (commandWord.equals(cleaned)) ? "" : cleaned.substring(cleaned.indexOf(" ") + 1);
 
 				for (final BotMethod b : BotMethod.values()) {
