@@ -6,6 +6,7 @@ import raptor.bot.api.IAliasManager;
 import raptor.bot.api.IMadlibManager;
 import raptor.bot.api.ISoundManager;
 import raptor.bot.api.ITransformer;
+import raptor.bot.api.chat.IChatStatistics;
 import raptor.bot.command.BotCommandParser;
 import raptor.bot.command.BotMethod;
 import raptor.bot.command.commands.BotCommand;
@@ -20,7 +21,6 @@ import raptor.bot.command.commands.madlib.MadlibCommand;
 import raptor.bot.command.commands.madlib.MadlibFillCommand;
 import raptor.bot.command.commands.madlib.MadlibFormatCommand;
 import raptor.bot.irc.ChatMessage;
-import raptor.bot.utils.ChatDatastoreManager;
 import raptor.bot.utils.SoundPlayer;
 
 public class RaptorBot {
@@ -28,14 +28,14 @@ public class RaptorBot {
 	private final IAliasManager aliasManager;
 	private final ITransformer<ChatMessage, String> chatProcessor;
 	private final IMadlibManager madlibManager;
-	private final ChatDatastoreManager chatDatastore;
+	private final IChatStatistics chatStats;
 
-	public RaptorBot(final ISoundManager<String> soundManager, final IAliasManager aliasManager, final ITransformer<ChatMessage, String> chatProcessor, final IMadlibManager madlibManager, final ChatDatastoreManager chatDatastore) {
+	public RaptorBot(final ISoundManager<String> soundManager, final IAliasManager aliasManager, final ITransformer<ChatMessage, String> chatProcessor, final IMadlibManager madlibManager, final IChatStatistics chatStats) {
 		this.soundManager = soundManager;
 		this.aliasManager = aliasManager;
 		this.chatProcessor = chatProcessor;
 		this.madlibManager = madlibManager;
-		this.chatDatastore = chatDatastore;
+		this.chatStats = chatStats;
 	}
 
 	public String message(final ChatMessage message) {
@@ -57,7 +57,8 @@ public class RaptorBot {
 		} else if (command instanceof MadlibCommand) {
 			return madlibCommand((MadlibCommand) command);
 		} else if (command instanceof ChatStatsCommand) {
-			return "Total messages sent: " + chatDatastore.getTotalMessageCount();
+			final int totalMessages = chatStats.getTotalMessageCount();
+			return (totalMessages < 0) ? "Statistics unavailable." : "Total messages sent: " + totalMessages;
 		}
 
 		return "Invalid command '" + command.getCommand() + "' given. " + helpCommand();

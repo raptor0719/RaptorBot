@@ -19,10 +19,10 @@ import raptor.bot.irc.ChatMessage;
 import raptor.bot.irc.IRCClient;
 import raptor.bot.test.utils.TestWindow;
 import raptor.bot.utils.AliasManager;
-import raptor.bot.utils.ChatDatastoreManager;
 import raptor.bot.utils.MadlibManager;
 import raptor.bot.utils.SoundManager;
 import raptor.bot.utils.TransformerPipe;
+import raptor.bot.utils.chat.SQLChatDatastore;
 import raptor.bot.utils.words.PartOfSpeech;
 import raptor.bot.utils.words.WordBank;
 
@@ -35,7 +35,7 @@ public class Main {
 			throw new RuntimeException("An error occured while building the configuration.", e);
 		}
 
-		final ChatDatastoreManager chatDatastore = new ChatDatastoreManager(config.getChatDatastoreSqlConnectionURL(), config.getChatDatastoreSqlSchema(), config.getChatDatastoreSqlTable());
+		final SQLChatDatastore chatDatastore = new SQLChatDatastore(config.getChatDatastoreSqlConnectionURL(), config.getChatDatastoreSqlSchema(), config.getChatDatastoreSqlTable());
 		final RaptorBot bot = new RaptorBot(new SoundManager(config.getSoundsFilePath()), new AliasManager(config.getAliasFilePath()), getChatProcessor(), new MadlibManager(getWordBank(config.getDictionaryFilePath())), chatDatastore);
 
 		if (args.length >= 1 && Boolean.parseBoolean(args[0])) {

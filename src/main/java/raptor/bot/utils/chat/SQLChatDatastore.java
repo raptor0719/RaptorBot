@@ -1,4 +1,4 @@
-package raptor.bot.utils;
+package raptor.bot.utils.chat;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,7 +8,10 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class ChatDatastoreManager {
+import raptor.bot.api.chat.IChatDatastore;
+import raptor.bot.api.chat.IChatStatistics;
+
+public class SQLChatDatastore implements IChatDatastore, IChatStatistics {
 	private static final String COLUMNS = "Channel, Chatter, ChatMessage, MessageTimestamp";
 
 	private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
@@ -17,12 +20,13 @@ public class ChatDatastoreManager {
 	private final String schemaName;
 	private final String tableName;
 
-	public ChatDatastoreManager(final String connectionUrl, final String schemaName, final String tableName) {
+	public SQLChatDatastore(final String connectionUrl, final String schemaName, final String tableName) {
 		this.connectionUrl = connectionUrl;
 		this.schemaName = schemaName;
 		this.tableName = tableName;
 	}
 
+	@Override
 	public void storeMessage(final String channel, final String user, final String message, final long timestamp) {
 		try {
 			final Connection connection = DriverManager.getConnection(connectionUrl);
@@ -34,6 +38,7 @@ public class ChatDatastoreManager {
 		}
 	}
 
+	@Override
 	public int getTotalMessageCount() {
 		try {
 			final Connection connection = DriverManager.getConnection(connectionUrl);
