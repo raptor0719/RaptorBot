@@ -44,8 +44,7 @@ public class TestWindow extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				final String text = chatInput.getText();
 				chatInput.setText("");
-				chatDatastore.storeMessage("TestWindow", "master", text, System.currentTimeMillis());
-				final String message = bot.message(new ChatMessage("master", text));
+				final String message = bot.message(new ChatMessage("#TestWindow", "master!master@master.twitch.tv", text));
 				output.insert("master: " + text + "\n", 0);
 				output.insert((message != null && !message.isEmpty()) ? "raptorbot: " + message + "\n" : "", 0);
 			}
