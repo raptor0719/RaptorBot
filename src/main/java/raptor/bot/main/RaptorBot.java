@@ -28,17 +28,18 @@ public class RaptorBot {
 	private final IAliasManager aliasManager;
 	private final ITransformer<ChatMessage, String> chatProcessor;
 	private final IMadlibManager madlibManager;
-	private final IChatDatastore chatStats;
+	private final IChatDatastore chatDatastore;
 
-	public RaptorBot(final ISoundManager<String> soundManager, final IAliasManager aliasManager, final ITransformer<ChatMessage, String> chatProcessor, final IMadlibManager madlibManager, final IChatDatastore chatStats) {
+	public RaptorBot(final ISoundManager<String> soundManager, final IAliasManager aliasManager, final ITransformer<ChatMessage, String> chatProcessor, final IMadlibManager madlibManager, final IChatDatastore chatDatastore) {
 		this.soundManager = soundManager;
 		this.aliasManager = aliasManager;
 		this.chatProcessor = chatProcessor;
 		this.madlibManager = madlibManager;
-		this.chatStats = chatStats;
+		this.chatDatastore = chatDatastore;
 	}
 
 	public String message(final ChatMessage message) {
+		storeMessageToChatLog(message);
 		final BotCommand command = BotCommandParser.parseBotCommand(message.getMessage());
 
 		if (command == null) {
@@ -53,15 +54,23 @@ public class RaptorBot {
 			return aliasCommand((AliasCommand)command);
 		} else if (aliasManager.isAlias(command.getCommand())) {
 			final String aliasedCommand = aliasManager.getAliasedPhrase(command.getCommand());
-			return message(new ChatMessage(message.getUser(), aliasedCommand));
+			return message(new ChatMessage(message.getChannel(), message.getUser(), aliasedCommand));
 		} else if (command instanceof MadlibCommand) {
 			return madlibCommand((MadlibCommand) command);
 		} else if (command instanceof ChatStatsCommand) {
-			final int totalMessages = chatStats.getTotalMessageCount();
+			final int totalMessages = chatDatastore.getTotalMessageCount();
 			return (totalMessages < 0) ? "Statistics unavailable." : "Total messages sent: " + totalMessages;
 		}
 
 		return "Invalid command '" + command.getCommand() + "' given. " + helpCommand();
+	}
+
+	private void storeMessageToChatLog(final ChatMessage message) {
+		try {
+			chatDatastore.storeMessage(message.getChannel().substring(1), message.getUser().split("!")[0], message.getMessage(), System.currentTimeMillis());
+		} catch (Throwable t) {
+			t.printStackTrace();
+		}
 	}
 
 	private String playSound(final String sound) {

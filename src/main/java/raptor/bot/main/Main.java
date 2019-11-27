@@ -42,7 +42,7 @@ public class Main {
 		}
 
 		final IChatDatastore chatDatastore = getConfiguredChatDataManager(config);
-		final RaptorBot bot = new RaptorBot(new SoundManager(config.getSoundsFilePath()), new AliasManager(config.getAliasFilePath()), getChatProcessor(), new MadlibManager(getWordBank(config.getDictionaryFilePath())), chatDatastore);
+		final RaptorBot bot = new RaptorBot(new SoundManager(config.getSoundsFilePath()), new AliasManager(config.getAliasFilePath()), getChatProcessor(config.getIrcChannel(), config.getIrcUser()), new MadlibManager(getWordBank(config.getDictionaryFilePath())), chatDatastore);
 
 		if (args.length >= 1 && Boolean.parseBoolean(args[0])) {
 			new TestWindow(bot, chatDatastore);
@@ -68,12 +68,6 @@ public class Main {
 				while (messages.hasNext()) {
 					final ChatMessage message = messages.next();
 
-					try {
-						chatDatastore.storeMessage(channel.substring(1), message.getUser().split("!")[0], message.getMessage(), System.currentTimeMillis());
-					} catch (Throwable t) {
-						System.err.println(t);
-					}
-
 					System.out.println(message.getUser() + ": " + message.getMessage());
 					final String botResponse = bot.message(message);
 					if (botResponse != null && !botResponse.isEmpty() && (System.currentTimeMillis() - lastMessageTime) >= messageDelay) {
@@ -98,7 +92,7 @@ public class Main {
 			return new NoOpChatDatastore();
 	}
 
-	private static ITransformer<ChatMessage, String> getChatProcessor() {
+	private static ITransformer<ChatMessage, String> getChatProcessor(final String channel, final String botName) {
 		final ITransformer<ChatMessage, ChatMessage> wombatGreeter = new ITransformer<ChatMessage, ChatMessage>() {
 			final long timeBetweenGreetings = 3600000L;
 			long lastGreeting = -1;
@@ -110,7 +104,7 @@ public class Main {
 				if (in.getUser().toLowerCase().contains("wombat")) {
 					if ((System.currentTimeMillis() - lastGreeting) >= timeBetweenGreetings || lastGreeting < 0) {
 						lastGreeting = System.currentTimeMillis();
-						return new ChatMessage(null, "Welcome to the chat room!");
+						return new ChatMessage(channel, botName, "Welcome to the chat room!");
 					} else {
 						// Increase the time to next greeting by 1 minute every time wombat says something in chat
 						lastGreeting += 60000;
