@@ -26,6 +26,9 @@ public class BotConfig {
 	private final String chatDatastoreSqlSchema;
 	private final String chatDatastoreSqlTable;
 
+	private final boolean enableChatDatastoreFile;
+	private final String chatDatastoreFileDirectoryPath;
+
 	public BotConfig(final InputStream configStream) throws IOException {
 		final Properties props = new Properties();
 		props.load(configStream);
@@ -41,6 +44,9 @@ public class BotConfig {
 		ircUser = checkExistsOrError("irc-user", props);
 		ircPassword = readIrcPassword(checkExistsOrError("irc-password-file", props));
 		ircChannel = checkExistsOrError("irc-channel", props);
+
+		enableChatDatastoreFile = Boolean.parseBoolean(props.getProperty("enable-chatDatastore-file", "false"));
+		chatDatastoreFileDirectoryPath = (enableChatDatastoreFile) ? props.getProperty("chatDatastore-file-dirPath") : null;
 
 		enableChatDatastoreSql = Boolean.parseBoolean(props.getProperty("enable-chatDatastore-sql", "false"));
 		chatDatastoreSqlConnectionURL = (enableChatDatastoreSql) ? props.getProperty("chatDatastore-sql-connectionUrl") : null;
@@ -98,6 +104,14 @@ public class BotConfig {
 
 	public String getChatDatastoreSqlTable() {
 		return chatDatastoreSqlTable;
+	}
+
+	public boolean isEnableChatDatastoreFile() {
+		return enableChatDatastoreFile;
+	}
+
+	public String getChatDatastoreFileDirectoryPath() {
+		return chatDatastoreFileDirectoryPath;
 	}
 
 	private String checkExistsOrError(final String propName, final Properties props) {

@@ -23,6 +23,7 @@ import raptor.bot.utils.AliasManager;
 import raptor.bot.utils.MadlibManager;
 import raptor.bot.utils.SoundManager;
 import raptor.bot.utils.TransformerPipe;
+import raptor.bot.utils.chat.FileChatDatastore;
 import raptor.bot.utils.chat.NoOpChatDatastore;
 import raptor.bot.utils.chat.SQLChatDatastore;
 import raptor.bot.utils.words.PartOfSpeech;
@@ -44,7 +45,7 @@ public class Main {
 		final RaptorBot bot = new RaptorBot(new SoundManager(config.getSoundsFilePath()), new AliasManager(config.getAliasFilePath()), getChatProcessor(), new MadlibManager(getWordBank(config.getDictionaryFilePath())), chatDatastore);
 
 		if (args.length >= 1 && Boolean.parseBoolean(args[0])) {
-			new TestWindow(bot);
+			new TestWindow(bot, chatDatastore);
 			return;
 		}
 
@@ -89,7 +90,9 @@ public class Main {
 	}
 
 	private static IChatDataManager getConfiguredChatDataManager(final BotConfig config) {
-		if (config.isEnableChatDatastoreSql())
+		if (config.isEnableChatDatastoreFile())
+			return new FileChatDatastore(config.getChatDatastoreFileDirectoryPath());
+		else if (config.isEnableChatDatastoreSql())
 			return new SQLChatDatastore(config.getChatDatastoreSqlConnectionURL(), config.getChatDatastoreSqlSchema(), config.getChatDatastoreSqlTable());
 		else
 			return new NoOpChatDatastore();

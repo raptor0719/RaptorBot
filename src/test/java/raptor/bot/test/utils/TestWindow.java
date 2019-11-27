@@ -11,14 +11,14 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
+import raptor.bot.api.chat.IChatDatastore;
 import raptor.bot.irc.ChatMessage;
 import raptor.bot.main.RaptorBot;
 
 public class TestWindow extends JFrame {
-	public TestWindow(final RaptorBot bot) {
+	public TestWindow(final RaptorBot bot, final IChatDatastore chatDatastore) {
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setBounds(200, 200, 1000, 600);
 
@@ -31,7 +31,7 @@ public class TestWindow extends JFrame {
 		output.setVisible(true);
 		output.setLineWrap(true);
 
-		final JTextField chatInput = new JTextField();
+		final JTextArea chatInput = new JTextArea();
 		chatInput.setPreferredSize(new Dimension(400, 25));
 		chatInput.setVisible(true);
 
@@ -44,8 +44,10 @@ public class TestWindow extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				final String text = chatInput.getText();
 				chatInput.setText("");
+				chatDatastore.storeMessage("TestWindow", "master", text, System.currentTimeMillis());
 				final String message = bot.message(new ChatMessage("master", text));
-				output.insert((message != null && !message.isEmpty()) ? message + "\n" : "", 0);
+				output.insert("master: " + text + "\n", 0);
+				output.insert((message != null && !message.isEmpty()) ? "raptorbot: " + message + "\n" : "", 0);
 			}
 		};
 		submit.setAction(submitAction);
