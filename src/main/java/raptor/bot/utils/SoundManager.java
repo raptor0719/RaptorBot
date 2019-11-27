@@ -3,6 +3,7 @@ package raptor.bot.utils;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -61,6 +62,9 @@ public class SoundManager implements ISoundManager<String> {
 				soundsMap.put((String)e.getKey(), Paths.get(parentPath, (String)e.getValue()).toString());
 
 			return soundsMap;
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return new HashMap<String, String>();
 		} catch (Throwable t) {
 			throw new RuntimeException(t);
 		} finally {
