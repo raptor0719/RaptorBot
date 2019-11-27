@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 import raptor.bot.api.ITransformer;
-import raptor.bot.api.chat.IChatDataManager;
+import raptor.bot.api.chat.IChatDatastore;
 import raptor.bot.irc.ChatMessage;
 import raptor.bot.irc.IRCClient;
 import raptor.bot.test.utils.TestWindow;
@@ -41,7 +41,7 @@ public class Main {
 			throw new RuntimeException("An error occured while building the configuration.", e);
 		}
 
-		final IChatDataManager chatDatastore = getConfiguredChatDataManager(config);
+		final IChatDatastore chatDatastore = getConfiguredChatDataManager(config);
 		final RaptorBot bot = new RaptorBot(new SoundManager(config.getSoundsFilePath()), new AliasManager(config.getAliasFilePath()), getChatProcessor(), new MadlibManager(getWordBank(config.getDictionaryFilePath())), chatDatastore);
 
 		if (args.length >= 1 && Boolean.parseBoolean(args[0])) {
@@ -89,7 +89,7 @@ public class Main {
 		}
 	}
 
-	private static IChatDataManager getConfiguredChatDataManager(final BotConfig config) {
+	private static IChatDatastore getConfiguredChatDataManager(final BotConfig config) {
 		if (config.isEnableChatDatastoreFile())
 			return new FileChatDatastore(config.getChatDatastoreFileDirectoryPath());
 		else if (config.isEnableChatDatastoreSql())

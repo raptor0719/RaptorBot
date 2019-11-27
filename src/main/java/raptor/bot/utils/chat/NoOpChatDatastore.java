@@ -1,8 +1,8 @@
 package raptor.bot.utils.chat;
 
-import raptor.bot.api.chat.IChatDataManager;
+import raptor.bot.api.chat.IChatDatastore;
 
-public class NoOpChatDatastore implements IChatDataManager {
+public class NoOpChatDatastore implements IChatDatastore {
 	@Override
 	public int getTotalMessageCount() {
 		/* Return the signal that the datastore in unavailable */

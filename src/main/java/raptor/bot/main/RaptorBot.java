@@ -6,7 +6,7 @@ import raptor.bot.api.IAliasManager;
 import raptor.bot.api.IMadlibManager;
 import raptor.bot.api.ISoundManager;
 import raptor.bot.api.ITransformer;
-import raptor.bot.api.chat.IChatStatistics;
+import raptor.bot.api.chat.IChatDatastore;
 import raptor.bot.command.BotCommandParser;
 import raptor.bot.command.BotMethod;
 import raptor.bot.command.commands.BotCommand;
@@ -28,9 +28,9 @@ public class RaptorBot {
 	private final IAliasManager aliasManager;
 	private final ITransformer<ChatMessage, String> chatProcessor;
 	private final IMadlibManager madlibManager;
-	private final IChatStatistics chatStats;
+	private final IChatDatastore chatStats;
 
-	public RaptorBot(final ISoundManager<String> soundManager, final IAliasManager aliasManager, final ITransformer<ChatMessage, String> chatProcessor, final IMadlibManager madlibManager, final IChatStatistics chatStats) {
+	public RaptorBot(final ISoundManager<String> soundManager, final IAliasManager aliasManager, final ITransformer<ChatMessage, String> chatProcessor, final IMadlibManager madlibManager, final IChatDatastore chatStats) {
 		this.soundManager = soundManager;
 		this.aliasManager = aliasManager;
 		this.chatProcessor = chatProcessor;

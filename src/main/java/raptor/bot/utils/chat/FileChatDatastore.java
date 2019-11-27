@@ -8,9 +8,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
 
-import raptor.bot.api.chat.IChatDataManager;
+import raptor.bot.api.chat.IChatDatastore;
 
-public class FileChatDatastore implements IChatDataManager {
+public class FileChatDatastore implements IChatDatastore {
 	private static final String CHATLOG_FILE_NAME = "chatlog.txt";
 
 	private final String chatLogFilePath;

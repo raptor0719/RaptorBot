@@ -8,9 +8,9 @@ import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import raptor.bot.api.chat.IChatDataManager;
+import raptor.bot.api.chat.IChatDatastore;
 
-public class SQLChatDatastore implements IChatDataManager {
+public class SQLChatDatastore implements IChatDatastore {
 	private static final String COLUMNS = "Channel, Chatter, ChatMessage, MessageTimestamp";
 
 	private final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss.SSS");
