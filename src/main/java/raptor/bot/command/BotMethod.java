@@ -5,6 +5,7 @@ import raptor.bot.command.commands.BotCommand;
 import raptor.bot.command.commands.ChatStatsCommand;
 import raptor.bot.command.commands.HelpCommand;
 import raptor.bot.command.commands.SoundCommand;
+import raptor.bot.command.commands.WisdomCommand;
 import raptor.bot.command.commands.alias.AliasCreateCommand;
 import raptor.bot.command.commands.alias.AliasDeleteCommand;
 import raptor.bot.command.commands.alias.AliasListCommand;
@@ -61,6 +62,12 @@ public enum BotMethod {
 		@Override
 		public BotCommand parse(final String s) {
 			return new ChatStatsCommand();
+		}
+	}),
+	WISDOM("wisdom", new IParser<BotCommand>() {
+		@Override
+		public BotCommand parse(final String s) {
+			return ("".equals(s)) ? new WisdomCommand() : new WisdomCommand(Integer.parseInt(s.split(" ")[0]));
 		}
 	});
 

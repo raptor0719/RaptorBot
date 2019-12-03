@@ -1,6 +1,7 @@
 package raptor.bot.utils.chat;
 
 import raptor.bot.api.chat.IChatDatastore;
+import raptor.bot.irc.ChatMessage;
 
 public class NoOpChatDatastore implements IChatDatastore {
 	@Override
@@ -12,5 +13,11 @@ public class NoOpChatDatastore implements IChatDatastore {
 	@Override
 	public void storeMessage(String channel, String user, String message, long timestamp) {
 		/* No-op */
+	}
+
+	@Override
+	public ChatMessage getMessage(final int index) {
+		/* Return the signal that this message does not exist */
+		return null;
 	}
 }

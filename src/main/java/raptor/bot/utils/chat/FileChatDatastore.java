@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 
 import raptor.bot.api.chat.IChatDatastore;
+import raptor.bot.irc.ChatMessage;
 
 public class FileChatDatastore implements IChatDatastore {
 	private static final String CHATLOG_FILE_NAME = "chatlog.txt";
@@ -59,6 +60,57 @@ public class FileChatDatastore implements IChatDatastore {
 		}
 
 		return -1;
+	}
+
+	@Override
+	public ChatMessage getMessage(final int index) {
+		final File chatLog = new File(chatLogFilePath);
+
+		BufferedReader reader = null;
+
+		try {
+			reader = new BufferedReader(new FileReader(chatLog));
+
+			int current = 0;
+			String line = reader.readLine();
+			while (line != null && current != index) {
+				current++;
+				line = reader.readLine();
+			}
+			return parseLine(line);
+		} catch (Throwable t) {
+			System.err.println("Error reading chat datastore chatlog: " + t.getMessage());
+		} finally {
+			try {
+				if (reader != null)
+					reader.close();
+			} catch (IOException e) {
+				/* IGNORE FAILURE */
+			}
+		}
+
+		return null;
+	}
+
+	private ChatMessage parseLine(final String line) {
+		if (line.equals(null) || "".equals(line.trim()))
+			return null;
+
+		String remaining = line;
+		int nextSpaceIndex = remaining.indexOf(' ');
+		final String channel = remaining.substring(0, nextSpaceIndex);
+
+		remaining = remaining.substring(nextSpaceIndex + 1);
+		nextSpaceIndex = remaining.indexOf(' ');
+		final String user = remaining.substring(0, nextSpaceIndex);
+
+		remaining = remaining.substring(nextSpaceIndex + 1);
+		nextSpaceIndex = remaining.indexOf(' ');
+		final String timestamp = remaining.substring(0, nextSpaceIndex);
+
+		remaining = remaining.substring(nextSpaceIndex + 1);
+
+		return new ChatMessage(channel, user, remaining, Long.parseLong(timestamp));
 	}
 
 	private void appendLineToFile(final String line, final String filePath) {

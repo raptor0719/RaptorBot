@@ -1,6 +1,8 @@
 package raptor.bot.main;
 
 import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import raptor.bot.api.IAliasManager;
 import raptor.bot.api.IMadlibManager;
@@ -13,6 +15,7 @@ import raptor.bot.command.commands.BotCommand;
 import raptor.bot.command.commands.ChatStatsCommand;
 import raptor.bot.command.commands.HelpCommand;
 import raptor.bot.command.commands.SoundCommand;
+import raptor.bot.command.commands.WisdomCommand;
 import raptor.bot.command.commands.alias.AliasCommand;
 import raptor.bot.command.commands.alias.AliasCreateCommand;
 import raptor.bot.command.commands.alias.AliasDeleteCommand;
@@ -24,6 +27,8 @@ import raptor.bot.irc.ChatMessage;
 import raptor.bot.utils.SoundPlayer;
 
 public class RaptorBot {
+	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
 	private final ISoundManager<String> soundManager;
 	private final IAliasManager aliasManager;
 	private final ITransformer<ChatMessage, String> chatProcessor;
@@ -60,6 +65,9 @@ public class RaptorBot {
 		} else if (command instanceof ChatStatsCommand) {
 			final int totalMessages = chatDatastore.getTotalMessageCount();
 			return (totalMessages < 0) ? "Statistics unavailable." : "Total messages sent: " + totalMessages;
+		} else if (command instanceof WisdomCommand) {
+			final WisdomCommand wisdomCommand = (WisdomCommand)command;
+			return wisdomCommand(wisdomCommand.getIndex());
 		}
 
 		return "Invalid command '" + command.getCommand() + "' given. " + helpCommand();
@@ -101,6 +109,8 @@ public class RaptorBot {
 			return "Use '!alias list' to list all aliases. Use '!alias create <alias> <command>' to create a new alias or replace an existing alias. Use '!alias delete <alias>' to delete an alias";
 		} else if (MadlibCommand.COMMAND_WORD.equals(command)) {
 			return "Use '!madlib fill <phrase>' to fill the marked-up phrase with random words. Use '!madlib format' for info on formatting your phrase.";
+		} else if (WisdomCommand.COMMAND_WORD.equals(command)) {
+			return "Use '!wisdom' or '!wisdom <index>' to get some past wisdom from chat.";
 		} else {
 			return "Unknown command given for help. " + helpCommand();
 		}
@@ -131,6 +141,15 @@ public class RaptorBot {
 		} else {
 			return helpCommand(command.getCommand());
 		}
+	}
+
+	private String wisdomCommand(final int index) {
+		final int max = chatDatastore.getTotalMessageCount();
+		final int rowNumber = (index < 0) ? (int)(Math.random() * max) + 1 : index;
+		final ChatMessage msg = chatDatastore.getMessage(rowNumber);
+		if (msg == null)
+			return "There was no wisdom found. FeelsBadMan";
+		return "Wisdom #" + rowNumber + ": " + msg.getMessage() + " - " + msg.getUser() + " [" + sdf.format(new Date(msg.getTimestamp())) + "]";
 	}
 
 	private String buildSoundsList() {
