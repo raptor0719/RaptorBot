@@ -88,7 +88,7 @@ public class IRCClient {
 				if (message instanceof ClientMessage) {
 					final ClientMessage clientMessage = (ClientMessage)message;
 					if (chatMessages.containsKey(clientMessage.getChannel())) {
-						chatMessages.get(clientMessage.getChannel()).add(new ChatMessage(clientMessage.getChannel(), clientMessage.getSource(), clientMessage.getPayload()));
+						chatMessages.get(clientMessage.getChannel()).add(new ChatMessage(clientMessage.getChannel(), clientMessage.getSource(), clientMessage.getPayload(), System.currentTimeMillis()));
 					}
 				} else if (message instanceof PingMessage) {
 					final PingMessage ping = (PingMessage)message;

@@ -54,7 +54,7 @@ public class RaptorBot {
 			return aliasCommand((AliasCommand)command);
 		} else if (aliasManager.isAlias(command.getCommand())) {
 			final String aliasedCommand = aliasManager.getAliasedPhrase(command.getCommand());
-			return message(new ChatMessage(message.getChannel(), message.getUser(), aliasedCommand));
+			return message(new ChatMessage(message.getChannel(), message.getUser(), aliasedCommand, message.getTimestamp()));
 		} else if (command instanceof MadlibCommand) {
 			return madlibCommand((MadlibCommand) command);
 		} else if (command instanceof ChatStatsCommand) {

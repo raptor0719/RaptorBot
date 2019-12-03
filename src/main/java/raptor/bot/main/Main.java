@@ -104,7 +104,7 @@ public class Main {
 				if (in.getUser().toLowerCase().contains("wombat")) {
 					if ((System.currentTimeMillis() - lastGreeting) >= timeBetweenGreetings || lastGreeting < 0) {
 						lastGreeting = System.currentTimeMillis();
-						return new ChatMessage(channel, botName, "Welcome to the chat room!");
+						return new ChatMessage(channel, botName, "Welcome to the chat room!", lastGreeting);
 					} else {
 						// Increase the time to next greeting by 1 minute every time wombat says something in chat
 						lastGreeting += 60000;
