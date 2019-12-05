@@ -50,14 +50,15 @@ public class RaptorBot {
 	public void process() {
 		final Iterator<ChatMessage> messages = messageService.receiveMessages();
 		while (messages.hasNext()) {
-			final String botResponse = message(messages.next());
+			final ChatMessage message = messages.next();
+			final String botResponse = message(message);
+			storeMessageToChatLog(message);
 			if (botResponse != null && !"".equals(botResponse.trim()))
 				messageService.sendMessage(botResponse);
 		}
 	}
 
 	private String message(final ChatMessage message) {
-		storeMessageToChatLog(message);
 		final BotCommand command = BotCommandParser.parseBotCommand(message.getMessage());
 
 		if (command == null) {
