@@ -13,7 +13,10 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
+import raptor.bot.api.IMessageService;
 import raptor.bot.api.ITransformer;
 import raptor.bot.api.chat.IChatDatastore;
 import raptor.bot.irc.ChatMessage;
@@ -21,6 +24,7 @@ import raptor.bot.irc.IRCClient;
 import raptor.bot.test.utils.TestWindow;
 import raptor.bot.utils.AliasManager;
 import raptor.bot.utils.MadlibManager;
+import raptor.bot.utils.QueueBasedMessageService;
 import raptor.bot.utils.SoundManager;
 import raptor.bot.utils.TransformerPipe;
 import raptor.bot.utils.chat.FileChatDatastore;
@@ -41,11 +45,16 @@ public class Main {
 			throw new RuntimeException("An error occured while building the configuration.", e);
 		}
 
+		final Queue<ChatMessage> botInputQueue = new ConcurrentLinkedQueue<ChatMessage>();
+		final Queue<String> botOutputQueue = new ConcurrentLinkedQueue<String>();
+		final IMessageService<ChatMessage, String> botMessageService = new QueueBasedMessageService<ChatMessage, String>(botInputQueue, botOutputQueue);
+		final IMessageService<String, ChatMessage> botInputOutput = new QueueBasedMessageService<String, ChatMessage>(botOutputQueue, botInputQueue);
+
 		final IChatDatastore chatDatastore = getConfiguredChatDataManager(config);
-		final RaptorBot bot = new RaptorBot(new SoundManager(config.getSoundsFilePath()), new AliasManager(config.getAliasFilePath()), getChatProcessor(config.getIrcChannel(), config.getIrcUser()), new MadlibManager(getWordBank(config.getDictionaryFilePath())), chatDatastore);
+		final RaptorBot bot = new RaptorBot(botMessageService, new SoundManager(config.getSoundsFilePath()), new AliasManager(config.getAliasFilePath()), getChatProcessor(config.getIrcChannel(), config.getIrcUser()), new MadlibManager(getWordBank(config.getDictionaryFilePath())), chatDatastore);
 
 		if (args.length >= 1 && Boolean.parseBoolean(args[0])) {
-			new TestWindow(bot, chatDatastore);
+			new TestWindow(bot, botInputOutput, chatDatastore);
 			return;
 		}
 
@@ -67,10 +76,16 @@ public class Main {
 				final Iterator<ChatMessage> messages = client.getMessages(channel);
 				while (messages.hasNext()) {
 					final ChatMessage message = messages.next();
-
 					System.out.println(message.getUser() + ": " + message.getMessage());
-					final String botResponse = bot.message(message);
-					if (botResponse != null && !botResponse.isEmpty() && (System.currentTimeMillis() - lastMessageTime) >= messageDelay) {
+					botInputOutput.sendMessage(message);
+				}
+
+				bot.process();
+
+				final Iterator<String> botResponses = botInputOutput.receiveMessages();
+				while (botResponses.hasNext() && (System.currentTimeMillis() - lastMessageTime) >= messageDelay) {
+					final String botResponse = botResponses.next();
+					if (botResponse != null && !botResponse.isEmpty()) {
 						client.sendMessage(botResponse, channel);
 						lastMessageTime = System.currentTimeMillis();
 					}

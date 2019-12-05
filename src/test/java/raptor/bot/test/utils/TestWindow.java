@@ -3,6 +3,7 @@ package raptor.bot.test.utils;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.Iterator;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -11,14 +12,16 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
+import raptor.bot.api.IMessageService;
 import raptor.bot.api.chat.IChatDatastore;
 import raptor.bot.irc.ChatMessage;
 import raptor.bot.main.RaptorBot;
 
 public class TestWindow extends JFrame {
-	public TestWindow(final RaptorBot bot, final IChatDatastore chatDatastore) {
+	public TestWindow(final RaptorBot bot, final IMessageService<String, ChatMessage> botInputOutput, final IChatDatastore chatDatastore) {
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);
 		this.setBounds(200, 200, 1000, 600);
 
@@ -31,7 +34,7 @@ public class TestWindow extends JFrame {
 		output.setVisible(true);
 		output.setLineWrap(true);
 
-		final JTextArea chatInput = new JTextArea();
+		final JTextField chatInput = new JTextField();
 		chatInput.setPreferredSize(new Dimension(400, 25));
 		chatInput.setVisible(true);
 
@@ -44,9 +47,15 @@ public class TestWindow extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				final String text = chatInput.getText();
 				chatInput.setText("");
-				final String message = bot.message(new ChatMessage("#TestWindow", "master!master@master.twitch.tv", text, System.currentTimeMillis()));
+
+				botInputOutput.sendMessage(new ChatMessage("#TestWindow", "master!master@master.twitch.tv", text, System.currentTimeMillis()));
 				output.insert("master: " + text + "\n", 0);
-				output.insert((message != null && !message.isEmpty()) ? "raptorbot: " + message + "\n" : "", 0);
+				bot.process();
+				final Iterator<String> botResponses = botInputOutput.receiveMessages();
+				while (botResponses.hasNext()) {
+					final String message = botResponses.next();
+					output.insert((message != null && !message.isEmpty()) ? "raptorbot: " + message + "\n" : "", 0);
+				}
 			}
 		};
 		submit.setAction(submitAction);

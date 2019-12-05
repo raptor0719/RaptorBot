@@ -3,9 +3,11 @@ package raptor.bot.main;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 
 import raptor.bot.api.IAliasManager;
 import raptor.bot.api.IMadlibManager;
+import raptor.bot.api.IMessageService;
 import raptor.bot.api.ISoundManager;
 import raptor.bot.api.ITransformer;
 import raptor.bot.api.chat.IChatDatastore;
@@ -29,13 +31,15 @@ import raptor.bot.utils.SoundPlayer;
 public class RaptorBot {
 	private static final SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
+	private final IMessageService<ChatMessage, String> messageService;
 	private final ISoundManager<String> soundManager;
 	private final IAliasManager aliasManager;
 	private final ITransformer<ChatMessage, String> chatProcessor;
 	private final IMadlibManager madlibManager;
 	private final IChatDatastore chatDatastore;
 
-	public RaptorBot(final ISoundManager<String> soundManager, final IAliasManager aliasManager, final ITransformer<ChatMessage, String> chatProcessor, final IMadlibManager madlibManager, final IChatDatastore chatDatastore) {
+	public RaptorBot(final IMessageService<ChatMessage, String> messageService, final ISoundManager<String> soundManager, final IAliasManager aliasManager, final ITransformer<ChatMessage, String> chatProcessor, final IMadlibManager madlibManager, final IChatDatastore chatDatastore) {
+		this.messageService = messageService;
 		this.soundManager = soundManager;
 		this.aliasManager = aliasManager;
 		this.chatProcessor = chatProcessor;
@@ -43,7 +47,16 @@ public class RaptorBot {
 		this.chatDatastore = chatDatastore;
 	}
 
-	public String message(final ChatMessage message) {
+	public void process() {
+		final Iterator<ChatMessage> messages = messageService.receiveMessages();
+		while (messages.hasNext()) {
+			final String botResponse = message(messages.next());
+			if (botResponse != null && !"".equals(botResponse.trim()))
+				messageService.sendMessage(botResponse);
+		}
+	}
+
+	private String message(final ChatMessage message) {
 		storeMessageToChatLog(message);
 		final BotCommand command = BotCommandParser.parseBotCommand(message.getMessage());
 
