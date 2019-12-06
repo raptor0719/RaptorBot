@@ -7,6 +7,7 @@ import java.util.Iterator;
 
 import raptor.bot.api.IAliasManager;
 import raptor.bot.api.IMadlibManager;
+import raptor.bot.api.IMemeManager;
 import raptor.bot.api.IMessageService;
 import raptor.bot.api.ISoundManager;
 import raptor.bot.api.ITransformer;
@@ -16,6 +17,7 @@ import raptor.bot.command.BotMethod;
 import raptor.bot.command.commands.BotCommand;
 import raptor.bot.command.commands.ChatStatsCommand;
 import raptor.bot.command.commands.HelpCommand;
+import raptor.bot.command.commands.MemeCommand;
 import raptor.bot.command.commands.SoundCommand;
 import raptor.bot.command.commands.WisdomCommand;
 import raptor.bot.command.commands.alias.AliasCommand;
@@ -26,6 +28,7 @@ import raptor.bot.command.commands.madlib.MadlibCommand;
 import raptor.bot.command.commands.madlib.MadlibFillCommand;
 import raptor.bot.command.commands.madlib.MadlibFormatCommand;
 import raptor.bot.irc.ChatMessage;
+import raptor.bot.utils.MemePlayer;
 import raptor.bot.utils.SoundPlayer;
 
 public class RaptorBot {
@@ -36,14 +39,16 @@ public class RaptorBot {
 	private final IAliasManager aliasManager;
 	private final ITransformer<ChatMessage, String> chatProcessor;
 	private final IMadlibManager madlibManager;
+	private final IMemeManager memeManager;
 	private final IChatDatastore chatDatastore;
 
-	public RaptorBot(final IMessageService<ChatMessage, String> messageService, final ISoundManager<String> soundManager, final IAliasManager aliasManager, final ITransformer<ChatMessage, String> chatProcessor, final IMadlibManager madlibManager, final IChatDatastore chatDatastore) {
+	public RaptorBot(final IMessageService<ChatMessage, String> messageService, final ISoundManager<String> soundManager, final IAliasManager aliasManager, final ITransformer<ChatMessage, String> chatProcessor, final IMadlibManager madlibManager, final IMemeManager memeManager, final IChatDatastore chatDatastore) {
 		this.messageService = messageService;
 		this.soundManager = soundManager;
 		this.aliasManager = aliasManager;
 		this.chatProcessor = chatProcessor;
 		this.madlibManager = madlibManager;
+		this.memeManager = memeManager;
 		this.chatDatastore = chatDatastore;
 	}
 
@@ -76,6 +81,9 @@ public class RaptorBot {
 			return message(new ChatMessage(message.getChannel(), message.getUser(), aliasedCommand, message.getTimestamp()));
 		} else if (command instanceof MadlibCommand) {
 			return madlibCommand((MadlibCommand) command);
+		} else if (command instanceof MemeCommand) {
+			final MemeCommand memeCommand = (MemeCommand)command;
+			return memeCommand(memeCommand);
 		} else if (command instanceof ChatStatsCommand) {
 			final int totalMessages = chatDatastore.getTotalMessageCount();
 			return (totalMessages < 0) ? "Statistics unavailable." : "Total messages sent: " + totalMessages;
@@ -123,6 +131,8 @@ public class RaptorBot {
 			return "Use '!alias list' to list all aliases. Use '!alias create <alias> <command>' to create a new alias or replace an existing alias. Use '!alias delete <alias>' to delete an alias";
 		} else if (MadlibCommand.COMMAND_WORD.equals(command)) {
 			return "Use '!madlib fill <phrase>' to fill the marked-up phrase with random words. Use '!madlib format' for info on formatting your phrase.";
+		} else if (MemeCommand.COMMAND_WORD.equals(command)) {
+			return "Use '!meme <name>' to display the meme on screen! VisLaud " + buildMemeList();
 		} else if (WisdomCommand.COMMAND_WORD.equals(command)) {
 			return "Use '!wisdom' or '!wisdom <index>' to get some past wisdom from chat.";
 		} else {
@@ -155,6 +165,13 @@ public class RaptorBot {
 		} else {
 			return helpCommand(command.getCommand());
 		}
+	}
+
+	private String memeCommand(final MemeCommand command) {
+		if (command.getMeme() == null)
+			return helpCommand(MemeCommand.COMMAND_WORD);
+		MemePlayer.playMeme(memeManager.getMemeFile(command.getMeme()), memeManager.getMemeLength(command.getMeme()));
+		return "";
 	}
 
 	private String wisdomCommand(final int index) {
@@ -192,5 +209,13 @@ public class RaptorBot {
 		for (final String s : aliases)
 			aliasList += s + ", ";
 		return aliasList.substring(0, aliasList.length() - 2) + ".";
+	}
+
+	private String buildMemeList() {
+		String memeList = "Memes List: ";
+		for (final String s : memeManager.getMemes()) {
+			memeList += s + ", ";
+		}
+		return memeList.substring(0, memeList.length() - 2) + ".";
 	}
 }

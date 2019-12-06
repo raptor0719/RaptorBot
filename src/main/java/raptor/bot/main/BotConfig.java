@@ -15,6 +15,9 @@ public class BotConfig {
 	private final String soundsFilePath;
 	private final String dictionaryFilePath;
 
+	private final String memesFilePath;
+	private final String memesActiveFilePath;
+
 	private final String ircIp;
 	private final int ircPort;
 	private final String ircUser;
@@ -38,6 +41,9 @@ public class BotConfig {
 		aliasFilePath = props.getProperty("alias-file", "aliases.txt");
 		soundsFilePath = props.getProperty("sounds-file", Paths.get("sounds", "sounds.properties").toString());
 		dictionaryFilePath = props.getProperty("dictionary-file", "dictionary.txt");
+
+		memesFilePath = props.getProperty("memes-file", Paths.get("memes", "memes.properties").toString());
+		memesActiveFilePath = props.getProperty("memes-active-file", "current.gif");
 
 		ircIp = checkExistsOrError("irc-ip", props);
 		ircPort = Integer.parseInt(checkExistsOrError("irc-port", props));
@@ -68,6 +74,14 @@ public class BotConfig {
 
 	public String getDictionaryFilePath() {
 		return dictionaryFilePath;
+	}
+
+	public String getMemeFilePath() {
+		return memesFilePath;
+	}
+
+	public String getMemeActiveFilePath() {
+		return memesActiveFilePath;
 	}
 
 	public String getIrcIp() {
