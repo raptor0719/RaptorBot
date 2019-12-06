@@ -106,10 +106,8 @@ public class RaptorBot {
 	private String playSound(final String sound) {
 		final InputStream audio = soundManager.getSound(sound);
 
-		if (audio != null) {
-			System.out.println("Playing sound: " + sound);
+		if (audio != null)
 			SoundPlayer.playSound(audio);
-		}
 
 		return "";
 	}
