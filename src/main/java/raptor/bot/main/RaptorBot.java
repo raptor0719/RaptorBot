@@ -92,7 +92,7 @@ public class RaptorBot {
 			return wisdomCommand(wisdomCommand.getIndex());
 		}
 
-		return "Invalid command '" + command.getCommand() + "' given. " + helpCommand();
+		return "";
 	}
 
 	private void storeMessageToChatLog(final ChatMessage message) {
@@ -106,11 +106,11 @@ public class RaptorBot {
 	private String playSound(final String sound) {
 		final InputStream audio = soundManager.getSound(sound);
 
-		if (audio == null)
-			return helpCommand(SoundCommand.COMMAND_WORD);
+		if (audio != null) {
+			System.out.println("Playing sound: " + sound);
+			SoundPlayer.playSound(audio);
+		}
 
-		System.out.println("Playing sound: " + sound);
-		SoundPlayer.playSound(audio);
 		return "";
 	}
 
