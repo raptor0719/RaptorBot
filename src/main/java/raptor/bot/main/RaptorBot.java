@@ -105,16 +105,12 @@ public class RaptorBot {
 
 	private String playSound(final String sound) {
 		final InputStream audio = soundManager.getSound(sound);
-		if (audio != null) {
-			try {
-				System.out.println("Playing sound: " + sound);
-				SoundPlayer.playSound(audio);
-			} catch (Throwable t) {
-				System.out.println("The SoundPlayer threw an error with the following message: " + t.getMessage());
-			}
-		} else {
+
+		if (audio == null)
 			return helpCommand(SoundCommand.COMMAND_WORD);
-		}
+
+		System.out.println("Playing sound: " + sound);
+		SoundPlayer.playSound(audio);
 		return "";
 	}
 
