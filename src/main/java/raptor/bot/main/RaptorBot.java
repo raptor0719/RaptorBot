@@ -132,7 +132,7 @@ public class RaptorBot {
 		} else if (MadlibCommand.COMMAND_WORD.equals(command)) {
 			return "Use '!madlib fill <phrase>' to fill the marked-up phrase with random words. Use '!madlib format' for info on formatting your phrase.";
 		} else if (MemeCommand.COMMAND_WORD.equals(command)) {
-			return "Use '!meme <name>' to display the meme on screen! VisLaud " + buildMemeList();
+			return "Use '!<name>' or '!meme <name>' to display the meme on screen! VisLaud " + buildMemeList();
 		} else if (WisdomCommand.COMMAND_WORD.equals(command)) {
 			return "Use '!wisdom' or '!wisdom <index>' to get some past wisdom from chat.";
 		} else {
