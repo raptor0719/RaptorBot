@@ -28,4 +28,8 @@ public class ChatMessage {
 	public long getTimestamp() {
 		return timestamp;
 	}
+
+	public ChatMessage setNewMessage(final String newMessage) {
+		return new ChatMessage(channel, user, newMessage, timestamp);
+	}
 }

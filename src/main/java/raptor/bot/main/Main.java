@@ -16,9 +16,19 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import raptor.bot.api.IAliasManager;
 import raptor.bot.api.ITransformer;
 import raptor.bot.api.chat.IChatDatastore;
 import raptor.bot.api.message.IMessageService;
+import raptor.bot.command.BotCommandListProcessor;
+import raptor.bot.command.BotCommandProcessor;
+import raptor.bot.command.processors.AliasCommandProcessor;
+import raptor.bot.command.processors.ChatStatsCommandProcessor;
+import raptor.bot.command.processors.HelpCommandProcessor;
+import raptor.bot.command.processors.MadlibCommandProcessor;
+import raptor.bot.command.processors.MemeCommandProcessor;
+import raptor.bot.command.processors.SoundCommandProcessor;
+import raptor.bot.command.processors.WisdomCommandProcessor;
 import raptor.bot.irc.ChatMessage;
 import raptor.bot.irc.IRCClient;
 import raptor.bot.test.utils.TestWindow;
@@ -54,7 +64,18 @@ public class Main {
 		final IMessageService<String, ChatMessage> botInputOutput = new QueueBasedMessageService<String, ChatMessage>(botOutputQueue, botInputQueue);
 
 		final IChatDatastore chatDatastore = getConfiguredChatDataManager(config);
-		final RaptorBot bot = new RaptorBot(botMessageService, new SoundManager(config.getSoundsFilePath()), new AliasManager(config.getAliasFilePath()), getChatProcessor(config.getIrcChannel(), config.getIrcUser()), new MadlibManager(getWordBank(config.getDictionaryFilePath())), new MemeManager(config.getMemeFilePath()), chatDatastore);
+		final IAliasManager aliasManager = new AliasManager(config.getAliasFilePath());
+
+		final List<BotCommandProcessor> processors = new ArrayList<BotCommandProcessor>();
+		processors.add(new AliasCommandProcessor(aliasManager));
+		processors.add(new ChatStatsCommandProcessor(chatDatastore));
+		processors.add(new MadlibCommandProcessor(new MadlibManager(getWordBank(config.getDictionaryFilePath()))));
+		processors.add(new WisdomCommandProcessor(chatDatastore));
+		processors.add(new SoundCommandProcessor(new SoundManager(config.getSoundsFilePath())));
+		processors.add(new MemeCommandProcessor(new MemeManager(config.getMemeFilePath())));
+		processors.add(new HelpCommandProcessor(processors));
+
+		final RaptorBot bot = new RaptorBot(botMessageService, getChatProcessor(config.getIrcChannel(), config.getIrcUser()), chatDatastore, new BotCommandListProcessor(processors));
 
 		if (args.length >= 1 && Boolean.parseBoolean(args[0])) {
 			new TestWindow(bot, botInputOutput, chatDatastore);
