@@ -15,8 +15,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 
-import raptor.bot.api.IMessageService;
 import raptor.bot.api.chat.IChatDatastore;
+import raptor.bot.api.message.IMessageService;
 import raptor.bot.irc.ChatMessage;
 import raptor.bot.main.RaptorBot;
 

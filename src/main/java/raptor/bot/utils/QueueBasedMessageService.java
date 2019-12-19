@@ -3,7 +3,7 @@ package raptor.bot.utils;
 import java.util.Iterator;
 import java.util.Queue;
 
-import raptor.bot.api.IMessageService;
+import raptor.bot.api.message.IMessageService;
 
 public class QueueBasedMessageService<R, S> implements IMessageService<R, S> {
 	private final Queue<R> receiverQueue;

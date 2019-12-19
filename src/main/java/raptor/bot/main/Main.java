@@ -16,9 +16,9 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import raptor.bot.api.IMessageService;
 import raptor.bot.api.ITransformer;
 import raptor.bot.api.chat.IChatDatastore;
+import raptor.bot.api.message.IMessageService;
 import raptor.bot.irc.ChatMessage;
 import raptor.bot.irc.IRCClient;
 import raptor.bot.test.utils.TestWindow;
