@@ -35,5 +35,9 @@ public abstract class BotCommandProcessor implements IBotProcessor<ChatMessage> 
 		return commandWord;
 	}
 
+	public String getHelpMessage() {
+		return helpMessage;
+	}
+
 	protected abstract boolean doProcess(final ChatMessage input, final IMessageSender<String> sender);
 }

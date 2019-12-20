@@ -29,7 +29,7 @@ public class HelpCommandProcessor extends BotCommandProcessor {
 		}
 
 		final HelpCommand helpCommand = (HelpCommand)command;
-		final String helpQuery = ((helpCommand.getCommand() == null || helpCommand.getCommand().isEmpty()) ? "help" : helpCommand.getCommand()) + " help";
+		final String helpQuery = "!" + ((helpCommand.getCommand() == null || helpCommand.getCommand().isEmpty()) ? "help" : helpCommand.getCommand()) + " help";
 
 		boolean wasProcessed = false;
 		for (final IBotProcessor<ChatMessage> p : processors)

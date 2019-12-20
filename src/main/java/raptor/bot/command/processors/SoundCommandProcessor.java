@@ -30,6 +30,9 @@ public class SoundCommandProcessor extends BotCommandProcessor {
 		}
 
 		final SoundCommand soundCommand = (SoundCommand)command;
+		if (soundCommand.getSound() == null || soundCommand.getSound().isEmpty())
+			sender.sendMessage(getHelpMessage());
+
 		final InputStream audio = soundManager.getSound(soundCommand.getSound());
 
 		if (audio != null)

@@ -30,8 +30,12 @@ public class MemeCommandProcessor extends BotCommandProcessor {
 		final MemeCommand memeCommand = (MemeCommand)command;
 		final String meme = memeCommand.getMeme();
 
-		if (meme == null || "".equals(meme.trim()))
+		if (meme == null || "".equals(meme.trim())) {
+			sender.sendMessage(getHelpMessage());
 			return true;
+		} else if (memeManager.getMemeFile(meme) == null || memeManager.getMemeFile(meme).isEmpty() || memeManager.getMemeLength(meme) <= 0) {
+			return true;
+		}
 
 		MemePlayer.playMeme(memeManager.getMemeFile(meme), memeManager.getMemeLength(meme));
 
