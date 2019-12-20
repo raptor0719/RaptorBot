@@ -2,6 +2,7 @@ package raptor.bot.command.processors;
 
 import java.util.List;
 
+import raptor.bot.api.IBotProcessor;
 import raptor.bot.api.message.IMessageSender;
 import raptor.bot.command.BotCommandProcessor;
 import raptor.bot.command.BotMethod;
@@ -10,9 +11,9 @@ import raptor.bot.command.commands.HelpCommand;
 import raptor.bot.irc.ChatMessage;
 
 public class HelpCommandProcessor extends BotCommandProcessor {
-	final List<BotCommandProcessor> processors;
+	private final List<IBotProcessor<ChatMessage>> processors;
 
-	public HelpCommandProcessor(final List<BotCommandProcessor> processors) {
+	public HelpCommandProcessor(final List<IBotProcessor<ChatMessage>> processors) {
 		super(BotMethod.HELP.getWord(), "Use '!help <command>' for help for a specific command. " + buildCommandList(processors));
 		this.processors = processors;
 	}
@@ -31,7 +32,7 @@ public class HelpCommandProcessor extends BotCommandProcessor {
 		final String helpQuery = ((helpCommand.getCommand() == null || helpCommand.getCommand().isEmpty()) ? "help" : helpCommand.getCommand()) + " help";
 
 		boolean wasProcessed = false;
-		for (final BotCommandProcessor p : processors)
+		for (final IBotProcessor<ChatMessage> p : processors)
 			if (p.process(message.setNewMessage(helpQuery), sender)) {
 				wasProcessed = true;
 				break;
@@ -43,10 +44,11 @@ public class HelpCommandProcessor extends BotCommandProcessor {
 		return wasProcessed;
 	}
 
-	private static String buildCommandList(final List<BotCommandProcessor> processors) {
+	private static String buildCommandList(final List<IBotProcessor<ChatMessage>> processors) {
 		String commandList = "The following is a list of commands: ";
-		for (final BotCommandProcessor p : processors)
-			commandList += p.getCommandWord() + ", ";
+		for (final IBotProcessor<ChatMessage> p : processors)
+			if (p instanceof BotCommandProcessor)
+				commandList += ((BotCommandProcessor)p).getCommandWord() + ", ";
 		return commandList.substring(0, commandList.length() - 2) + ".";
 	}
 }

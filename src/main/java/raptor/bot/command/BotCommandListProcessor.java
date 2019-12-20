@@ -7,9 +7,9 @@ import raptor.bot.api.message.IMessageSender;
 import raptor.bot.irc.ChatMessage;
 
 public class BotCommandListProcessor implements IBotProcessor<ChatMessage> {
-	private final List<BotCommandProcessor> processors;
+	private final List<IBotProcessor<ChatMessage>> processors;
 
-	public BotCommandListProcessor(final List<BotCommandProcessor> processors) {
+	public BotCommandListProcessor(final List<IBotProcessor<ChatMessage>> processors) {
 		this.processors = processors;
 	}
 
@@ -22,11 +22,9 @@ public class BotCommandListProcessor implements IBotProcessor<ChatMessage> {
 		if ("".equals(input.trim()) || !input.startsWith("!") || input.length() < 2)
 			return false;
 
-		final String cleaned = input.trim().substring(1);
-
 		boolean wasProcessed = false;
-		for (final BotCommandProcessor command : processors) {
-			wasProcessed = command.process(message.setNewMessage(cleaned), sender);
+		for (final IBotProcessor<ChatMessage> command : processors) {
+			wasProcessed = command.process(message, sender);
 			if (wasProcessed)
 				break;
 		}

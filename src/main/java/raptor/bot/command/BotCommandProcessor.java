@@ -15,13 +15,13 @@ public abstract class BotCommandProcessor implements IBotProcessor<ChatMessage> 
 
 	@Override
 	public boolean process(final ChatMessage message, final IMessageSender<String> sender) {
-		final String input = message.getMessage();
+		final String input = message.getMessage().substring(1);
 		final String command = input.split(" ")[0].toLowerCase();
 
 		if (!command.equals(commandWord.toLowerCase()))
 			return false;
 
-		final String params = (commandWord.equals(input)) ? "" : input.substring(input.indexOf(" ") + 1);
+		final String params = (commandWord.equals(input.toLowerCase())) ? "" : input.substring(input.indexOf(" ") + 1);
 
 		if ("help".equals(params.trim().toLowerCase())) {
 			sender.sendMessage(helpMessage);

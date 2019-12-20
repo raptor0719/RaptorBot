@@ -17,12 +17,13 @@ import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 import raptor.bot.api.IAliasManager;
+import raptor.bot.api.IBotProcessor;
 import raptor.bot.api.ITransformer;
 import raptor.bot.api.chat.IChatDatastore;
 import raptor.bot.api.message.IMessageService;
 import raptor.bot.command.BotCommandListProcessor;
-import raptor.bot.command.BotCommandProcessor;
 import raptor.bot.command.processors.AliasCommandProcessor;
+import raptor.bot.command.processors.AliasedCommandProcessor;
 import raptor.bot.command.processors.ChatStatsCommandProcessor;
 import raptor.bot.command.processors.HelpCommandProcessor;
 import raptor.bot.command.processors.MadlibCommandProcessor;
@@ -66,7 +67,7 @@ public class Main {
 		final IChatDatastore chatDatastore = getConfiguredChatDataManager(config);
 		final IAliasManager aliasManager = new AliasManager(config.getAliasFilePath());
 
-		final List<BotCommandProcessor> processors = new ArrayList<BotCommandProcessor>();
+		final List<IBotProcessor<ChatMessage>> processors = new ArrayList<IBotProcessor<ChatMessage>>();
 		processors.add(new AliasCommandProcessor(aliasManager));
 		processors.add(new ChatStatsCommandProcessor(chatDatastore));
 		processors.add(new MadlibCommandProcessor(new MadlibManager(getWordBank(config.getDictionaryFilePath()))));
@@ -74,6 +75,7 @@ public class Main {
 		processors.add(new SoundCommandProcessor(new SoundManager(config.getSoundsFilePath())));
 		processors.add(new MemeCommandProcessor(new MemeManager(config.getMemeFilePath())));
 		processors.add(new HelpCommandProcessor(processors));
+		processors.add(new AliasedCommandProcessor(aliasManager, processors));
 
 		final RaptorBot bot = new RaptorBot(botMessageService, getChatProcessor(config.getIrcChannel(), config.getIrcUser()), chatDatastore, new BotCommandListProcessor(processors));
 
