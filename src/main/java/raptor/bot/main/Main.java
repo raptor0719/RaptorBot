@@ -156,8 +156,17 @@ public class Main {
 			}
 		};
 
+		final ITransformer<ChatMessage, ChatMessage> TEMP_END = new ITransformer<ChatMessage, ChatMessage>() {
+			@Override
+			public ChatMessage transform(final ChatMessage in) {
+				return null;
+			}
+
+		};
+
 		final List<ITransformer<ChatMessage, ChatMessage>> processors = new LinkedList<>();
-		processors.add(wombatGreeter);
+		//processors.add(wombatGreeter);
+		processors.add(TEMP_END);
 
 		final ITransformer<ChatMessage, ChatMessage> pipe = new TransformerPipe<ChatMessage>(processors);
 
