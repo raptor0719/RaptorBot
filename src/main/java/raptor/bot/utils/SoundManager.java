@@ -15,17 +15,16 @@ import java.util.Properties;
 import raptor.bot.api.ISoundManager;
 
 public class SoundManager implements ISoundManager<String> {
-	private final Map<String, String> sounds;
+	private final Map<String, InfiniteIterator<String>> sounds;
 
 	public SoundManager(final String soundsConfigPath) {
 		this.sounds = readSoundProperties(soundsConfigPath);
-		verifySoundsExist();
 	}
 
 	@Override
 	public InputStream getSound(final String keyword) {
 		if (exists(keyword)) {
-			final File f = new File(sounds.get(keyword));
+			final File f = new File(sounds.get(keyword).next());
 			try {
 				return new BufferedInputStream(new FileInputStream(f));
 			} catch (Throwable t) {
@@ -46,7 +45,7 @@ public class SoundManager implements ISoundManager<String> {
 		return sounds.keySet();
 	}
 
-	private Map<String, String> readSoundProperties(final String path) {
+	private Map<String, InfiniteIterator<String>> readSoundProperties(final String path) {
 		final File soundPropsFile = new File(path);
 		final String parentPath = soundPropsFile.getParentFile().getAbsolutePath();
 
@@ -57,14 +56,44 @@ public class SoundManager implements ISoundManager<String> {
 			fis = new FileInputStream(soundPropsFile);
 			soundProps.load(fis);
 
-			final Map<String, String> soundsMap = new HashMap<String, String>();
-			for (final Map.Entry<Object, Object> e : soundProps.entrySet())
-				soundsMap.put((String)e.getKey(), Paths.get(parentPath, (String)e.getValue()).toString());
+			final Map<String, InfiniteIterator<String>> soundsMap = new HashMap<String, InfiniteIterator<String>>();
+			for (final Map.Entry<Object, Object> e : soundProps.entrySet()) {
+				final String key = (String)e.getKey();
+				final String value = (String)e.getValue();
+
+				if (!value.contains(",")) {
+					final String soundFilePath = Paths.get(parentPath, value).toString();
+
+					if (isValid(soundFilePath))
+						soundsMap.put(key, new SingleItemIterator<String>(soundFilePath));
+					else
+						System.err.println(String.format("The '%s' sound's file '%s' was not found.", key, soundFilePath));
+
+					continue;
+				}
+
+				final String[] values = value.split(",");
+				final List<String> listOfSounds = new ArrayList<String>();
+				for (final String s : values) {
+					System.out.println(s);
+					final String soundFilePath = Paths.get(parentPath, s).toString();
+
+					if (isValid(soundFilePath))
+						listOfSounds.add(soundFilePath);
+					else
+						System.err.println(String.format("The '%s' sound's file '%s' was not found.", key, soundFilePath));
+				}
+
+				if (listOfSounds.size() > 0)
+					soundsMap.put(key, new UniformRandomItemIterator<String>(listOfSounds));
+				else
+					System.err.println(String.format("None of the '%s' sound's files were found so this sound is not even being added to the list.", key));
+			}
 
 			return soundsMap;
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-			return new HashMap<String, String>();
+			return new HashMap<String, InfiniteIterator<String>>();
 		} catch (Throwable t) {
 			throw new RuntimeException(t);
 		} finally {
@@ -75,19 +104,8 @@ public class SoundManager implements ISoundManager<String> {
 		}
 	}
 
-	private boolean verifySoundsExist() {
-		boolean allExist = true;
-		final List<String> keysToRemove = new ArrayList<>();
-		for (final Map.Entry<String, String> e : sounds.entrySet()) {
-			final File soundFile = new File(e.getValue());
-			if (!soundFile.exists() || soundFile.isDirectory()) {
-				allExist = false;
-				keysToRemove.add(e.getKey());
-				System.err.println(String.format("The '%s' sound's file '%s' was not found. It is being removed from the list of available sounds.", e.getKey(), e.getValue()));
-			}
-		}
-		for (final String key : keysToRemove)
-			sounds.remove(key);
-		return allExist;
+	private boolean isValid(final String path) {
+		final File file = new File(path);
+		return file.exists() && !file.isDirectory();
 	}
 }
