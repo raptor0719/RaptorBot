@@ -75,7 +75,6 @@ public class SoundManager implements ISoundManager<String> {
 				final String[] values = value.split(",");
 				final List<String> listOfSounds = new ArrayList<String>();
 				for (final String s : values) {
-					System.out.println(s);
 					final String soundFilePath = Paths.get(parentPath, s).toString();
 
 					if (isValid(soundFilePath))
