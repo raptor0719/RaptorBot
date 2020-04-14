@@ -6,4 +6,5 @@ public interface IChatDatastore {
 	void storeMessage(String channel, String user, String message, long timestamp);
 	int getTotalMessageCount();
 	ChatMessage getMessage(int index);
+	int getMessageCountForUser(String user);
 }

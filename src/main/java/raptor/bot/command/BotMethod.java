@@ -2,7 +2,6 @@ package raptor.bot.command;
 
 import raptor.bot.api.IParser;
 import raptor.bot.command.commands.BotCommand;
-import raptor.bot.command.commands.ChatStatsCommand;
 import raptor.bot.command.commands.HelpCommand;
 import raptor.bot.command.commands.MemeCommand;
 import raptor.bot.command.commands.SoundCommand;
@@ -10,6 +9,8 @@ import raptor.bot.command.commands.WisdomCommand;
 import raptor.bot.command.commands.alias.AliasCreateCommand;
 import raptor.bot.command.commands.alias.AliasDeleteCommand;
 import raptor.bot.command.commands.alias.AliasListCommand;
+import raptor.bot.command.commands.chatstats.ChatStatsCommand;
+import raptor.bot.command.commands.chatstats.ChatStatsUserMessageCountCommand;
 import raptor.bot.command.commands.madlib.MadlibCommand;
 import raptor.bot.command.commands.madlib.MadlibFillCommand;
 import raptor.bot.command.commands.madlib.MadlibFormatCommand;
@@ -62,7 +63,7 @@ public enum BotMethod {
 	CHAT_STATS("chatstats", new IParser<BotCommand>() {
 		@Override
 		public BotCommand parse(final String s) {
-			return new ChatStatsCommand();
+			return ("".equals(s)) ? new ChatStatsCommand() : new ChatStatsUserMessageCountCommand(s.split(" ")[0]);
 		}
 	}),
 	WISDOM("wisdom", new IParser<BotCommand>() {

@@ -20,4 +20,10 @@ public class NoOpChatDatastore implements IChatDatastore {
 		/* Return the signal that this message does not exist */
 		return null;
 	}
+
+	@Override
+	public int getMessageCountForUser(String user) {
+		/* Return the signal that the datastore in unavailable */
+		return -1;
+	}
 }

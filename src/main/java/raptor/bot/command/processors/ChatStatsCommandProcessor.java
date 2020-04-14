@@ -5,14 +5,15 @@ import raptor.bot.api.message.IMessageSender;
 import raptor.bot.command.BotCommandProcessor;
 import raptor.bot.command.BotMethod;
 import raptor.bot.command.commands.BotCommand;
-import raptor.bot.command.commands.ChatStatsCommand;
+import raptor.bot.command.commands.chatstats.ChatStatsCommand;
+import raptor.bot.command.commands.chatstats.ChatStatsUserMessageCountCommand;
 import raptor.bot.irc.ChatMessage;
 
 public class ChatStatsCommandProcessor extends BotCommandProcessor {
 	private final IChatDatastore chatDatastore;
 
 	public ChatStatsCommandProcessor(final IChatDatastore chatDatastore) {
-		super(BotMethod.CHAT_STATS.getWord(), "Use !chatstats to get statistics on chat!");
+		super(BotMethod.CHAT_STATS.getWord(), "Use !chatstats to get statistics on chat or !chatstats <user> for stats a specific user!");
 		this.chatDatastore = chatDatastore;
 	}
 
@@ -26,8 +27,14 @@ public class ChatStatsCommandProcessor extends BotCommandProcessor {
 			return false;
 		}
 
-		final int totalMessages = chatDatastore.getTotalMessageCount();
-		sender.sendMessage((totalMessages < 0) ? "Statistics unavailable." : "Total messages sent: " + totalMessages);
+		if (command instanceof ChatStatsUserMessageCountCommand) {
+			final ChatStatsUserMessageCountCommand userCount = (ChatStatsUserMessageCountCommand)command;
+			final int userMessageCount = chatDatastore.getMessageCountForUser(userCount.getUser());
+			sender.sendMessage((userMessageCount < 0) ? "Statistics unavailable." : String.format("Message count for %s: %s", userCount.getUser(), userMessageCount));
+		} else {
+			final int totalMessages = chatDatastore.getTotalMessageCount();
+			sender.sendMessage((totalMessages < 0) ? "Statistics unavailable." : "Total messages sent: " + totalMessages);
+		}
 		return true;
 	}
 }

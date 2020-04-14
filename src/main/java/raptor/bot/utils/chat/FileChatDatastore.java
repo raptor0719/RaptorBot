@@ -92,6 +92,38 @@ public class FileChatDatastore implements IChatDatastore {
 		return null;
 	}
 
+	@Override
+	public int getMessageCountForUser(final String user) {
+		final File chatLog = new File(chatLogFilePath);
+
+		BufferedReader reader = null;
+
+		try {
+			reader = new BufferedReader(new FileReader(chatLog));
+
+			int total = 0;
+			String line = reader.readLine();
+			while (line != null) {
+				final ChatMessage msg = parseLine(line);
+				if (msg.getUser().equals(user))
+					total++;
+				line = reader.readLine();
+			}
+			return total;
+		} catch (Throwable t) {
+			System.err.println("Error reading chat datastore chatlog: " + t.getMessage());
+		} finally {
+			try {
+				if (reader != null)
+					reader.close();
+			} catch (IOException e) {
+				/* IGNORE FAILURE */
+			}
+		}
+
+		return -1;
+	}
+
 	private ChatMessage parseLine(final String line) {
 		if (line.equals(null) || "".equals(line.trim()))
 			return null;

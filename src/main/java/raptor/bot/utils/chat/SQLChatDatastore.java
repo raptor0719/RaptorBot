@@ -72,6 +72,21 @@ public class SQLChatDatastore implements IChatDatastore {
 		return null;
 	}
 
+	@Override
+	public int getMessageCountForUser(final String user) {
+		try {
+			final Connection connection = DriverManager.getConnection(connectionUrl);
+			final Statement statement = connection.createStatement();
+			final String query = getUserMessageCountStatement(user);
+			final ResultSet result = statement.executeQuery(query);
+			result.next();
+			return result.getInt(1);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
+
 	private String getStoreMessageStatement(final String channel, final String user, final String message, final long timestamp) {
 		return "INSERT INTO " + schemaName + "." + tableName + " (" + COLUMNS + ") VALUES (" +
 				quotes(channel) + ", " + quotes(user) + ", " + quotes(escapeSingleQuote(message)) + ", " + quotes(sdf.format(new Date(timestamp))) + ");";
@@ -85,6 +100,10 @@ public class SQLChatDatastore implements IChatDatastore {
 		return "SELECT " + COLUMNS + " FROM(" +
 				"SELECT ROW_NUMBER() OVER(ORDER BY " + TIMESTAMP_COLUMN + ") AS RowNum, " + COLUMNS + " FROM " + schemaName + "." + tableName +
 				") AS ORDERED WHERE RowNum = " + index;
+	}
+
+	private String getUserMessageCountStatement(final String user) {
+		return "SELECT COUNT(*) FROM " + schemaName + "." + tableName + " WHERE " + USER_COLUMN + "=" + quotes(user) + ";";
 	}
 
 	private String quotes(final String s) {
