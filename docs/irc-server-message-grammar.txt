@@ -33,4 +33,4 @@ IRC Server Message Grammar
 
 <params> ::= <text>
 
-<text> ::= it's text motherfucker
+<text> ::= it's text
