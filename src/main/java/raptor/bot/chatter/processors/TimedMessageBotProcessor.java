@@ -15,36 +15,39 @@ public class TimedMessageBotProcessor extends TimedBotProcessor {
 	private final int range;
 
 	public TimedMessageBotProcessor(final String message, final int interval) {
+		super(getTimeUntilNextMessage(interval));
 		this.message = message;
 		this.interval = interval;
 		this.isRandom = false;
 		this.min = -1;
 		this.range = -1;
-		setTimer(getTimeUntilNextMessage());
 	}
 
 	public TimedMessageBotProcessor(final String message, final int min, final int range) {
+		super(getTimeUntilNextMessage(min, range));
 		this.message = message;
 		this.interval = -1;
 		this.isRandom = true;
 		this.min = min;
 		this.range = range;
-		setTimer(getTimeUntilNextMessage());
 	}
 
 	@Override
-	protected boolean _process(final IMessageSender<String> sender) {
-		if (!hasGoneOff())
-			return false;
+	protected boolean doProcess(final IMessageSender<String> sender) {
 		sender.sendMessage(message);
-		setTimer(getTimeUntilNextMessage());
 		return true;
 	}
 
-	private long getTimeUntilNextMessage() {
-		if (!isRandom)
-			return interval*ONE_MINUTE;
+	@Override
+	protected long getTime() {
+		return (isRandom) ? getTimeUntilNextMessage(min, range) : getTimeUntilNextMessage(interval);
+	}
 
+	private static long getTimeUntilNextMessage(final int min, final int range) {
 		return (long) ((Math.random()*(range*ONE_MINUTE)) + (min*ONE_MINUTE));
+	}
+
+	private static long getTimeUntilNextMessage(final long interval) {
+		return interval*ONE_MINUTE;
 	}
 }
