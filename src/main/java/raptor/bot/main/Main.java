@@ -18,9 +18,11 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import raptor.bot.api.IAliasManager;
 import raptor.bot.api.IBotProcessor;
+import raptor.bot.api.IInherentBotProcessor;
 import raptor.bot.api.ITransformer;
 import raptor.bot.api.chat.IChatDatastore;
 import raptor.bot.api.message.IMessageService;
+import raptor.bot.chatter.processors.TimedMessageBotProcessor;
 import raptor.bot.command.BotCommandListProcessor;
 import raptor.bot.command.processors.AliasCommandProcessor;
 import raptor.bot.command.processors.AliasedCommandProcessor;
@@ -34,6 +36,7 @@ import raptor.bot.irc.ChatMessage;
 import raptor.bot.irc.IRCClient;
 import raptor.bot.test.utils.TestWindow;
 import raptor.bot.utils.AliasManager;
+import raptor.bot.utils.InherentBotProcessorPipe;
 import raptor.bot.utils.MadlibManager;
 import raptor.bot.utils.MemeManager;
 import raptor.bot.utils.MemePlayer;
@@ -77,7 +80,7 @@ public class Main {
 		processors.add(new HelpCommandProcessor(processors));
 		processors.add(new AliasedCommandProcessor(aliasManager, processors));
 
-		final RaptorBot bot = new RaptorBot(botMessageService, getChatProcessor(config.getIrcChannel(), config.getIrcUser()), chatDatastore, new BotCommandListProcessor(processors));
+		final RaptorBot bot = new RaptorBot(botMessageService, getChatProcessor(config.getIrcChannel(), config.getIrcUser()), chatDatastore, new BotCommandListProcessor(processors), getInherentProcessor());
 
 		if (args.length >= 1 && Boolean.parseBoolean(args[0])) {
 			new TestWindow(bot, botInputOutput, chatDatastore);
@@ -177,6 +180,13 @@ public class Main {
 				return (message == null) ? "" : message.getMessage();
 			}
 		};
+	}
+
+	private static IInherentBotProcessor getInherentProcessor() {
+		final List<IInherentBotProcessor> processors = new ArrayList<>();
+		processors.add(new TimedMessageBotProcessor("Wait", 60, 30));
+
+		return new InherentBotProcessorPipe(processors);
 	}
 
 	private static WordBank getWordBank(final String wordFilePath) {

@@ -3,6 +3,7 @@ package raptor.bot.main;
 import java.util.Iterator;
 
 import raptor.bot.api.IBotProcessor;
+import raptor.bot.api.IInherentBotProcessor;
 import raptor.bot.api.ITransformer;
 import raptor.bot.api.chat.IChatDatastore;
 import raptor.bot.api.message.IMessageService;
@@ -13,15 +14,19 @@ public class RaptorBot {
 	private final ITransformer<ChatMessage, String> chatProcessor;
 	private final IChatDatastore chatDatastore;
 	private final IBotProcessor<ChatMessage> botProcessor;
+	private final IInherentBotProcessor inherentProcessor;
 
-	public RaptorBot(final IMessageService<ChatMessage, String> messageService, final ITransformer<ChatMessage, String> chatProcessor, final IChatDatastore chatDatastore, final IBotProcessor<ChatMessage> botProcessor) {
+	public RaptorBot(final IMessageService<ChatMessage, String> messageService, final ITransformer<ChatMessage, String> chatProcessor, final IChatDatastore chatDatastore, final IBotProcessor<ChatMessage> botProcessor, final IInherentBotProcessor inherentProcessor) {
 		this.messageService = messageService;
 		this.chatProcessor = chatProcessor;
 		this.chatDatastore = chatDatastore;
 		this.botProcessor = botProcessor;
+		this.inherentProcessor = inherentProcessor;
 	}
 
 	public void process() {
+		inherentProcessor.process(messageService);
+
 		final Iterator<ChatMessage> messages = messageService.receiveMessages();
 		while (messages.hasNext()) {
 			final ChatMessage message = messages.next();
