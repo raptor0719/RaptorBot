@@ -1,5 +1,7 @@
 package raptor.bot.api.chat;
 
+import java.util.Iterator;
+
 import raptor.bot.irc.ChatMessage;
 
 public interface IChatDatastore {
@@ -7,4 +9,5 @@ public interface IChatDatastore {
 	int getTotalMessageCount();
 	ChatMessage getMessage(int index);
 	int getMessageCountForUser(String user);
+	Iterator<ChatMessage> getMessagesInRange(int start, int end);
 }

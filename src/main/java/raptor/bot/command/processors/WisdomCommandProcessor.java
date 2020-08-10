@@ -34,7 +34,7 @@ public class WisdomCommandProcessor extends BotCommandProcessor {
 		final WisdomCommand wisdomCommand = (WisdomCommand)command;
 		final int index = wisdomCommand.getIndex();
 		final int max = chatDatastore.getTotalMessageCount();
-		final int rowNumber = (index < 0) ? (int)(Math.random() * max) + 1 : index;
+		final int rowNumber = (index < 0) ? (int)(Math.random() * max) : index;
 		final ChatMessage msg = chatDatastore.getMessage(rowNumber);
 
 		if (msg == null)

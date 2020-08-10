@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Iterator;
 
 import raptor.bot.api.chat.IChatDatastore;
 import raptor.bot.irc.ChatMessage;
@@ -122,6 +123,12 @@ public class FileChatDatastore implements IChatDatastore {
 		}
 
 		return -1;
+	}
+
+	@Override
+	public Iterator<ChatMessage> getMessagesInRange(int start, int end) {
+		// TODO Auto-generated method stub
+		throw new RuntimeException("This method is not supported, yet.");
 	}
 
 	private ChatMessage parseLine(final String line) {
