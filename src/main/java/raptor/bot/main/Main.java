@@ -22,7 +22,10 @@ import raptor.bot.api.IInherentBotProcessor;
 import raptor.bot.api.ITransformer;
 import raptor.bot.api.chat.IChatDatastore;
 import raptor.bot.api.message.IMessageService;
-import raptor.bot.chatter.processors.TimedMessageBotProcessor;
+import raptor.bot.chatter.mimic.ChatMimic;
+import raptor.bot.chatter.mimic.ChatMimicDictionary;
+import raptor.bot.chatter.processors.ChatMimicTimedMessageBotProcessor;
+import raptor.bot.chatter.processors.ConcreteTimedMessageBotProcessor;
 import raptor.bot.command.BotCommandListProcessor;
 import raptor.bot.command.processors.AliasCommandProcessor;
 import raptor.bot.command.processors.AliasedCommandProcessor;
@@ -80,7 +83,10 @@ public class Main {
 		processors.add(new HelpCommandProcessor(processors));
 		processors.add(new AliasedCommandProcessor(aliasManager, processors));
 
-		final RaptorBot bot = new RaptorBot(botMessageService, getChatProcessor(config.getIrcChannel(), config.getIrcUser()), chatDatastore, new BotCommandListProcessor(processors), getInherentProcessor());
+		final ChatMimicDictionary chatMimicDictionary = ChatMimicDictionary.compile(chatDatastore);
+		final ChatMimic chatMimic = new ChatMimic(chatMimicDictionary);
+
+		final RaptorBot bot = new RaptorBot(botMessageService, getChatProcessor(config.getIrcChannel(), config.getIrcUser(), chatMimic, chatDatastore), chatDatastore, new BotCommandListProcessor(processors), getInherentProcessor(chatMimic, chatDatastore));
 
 		if (args.length >= 1 && Boolean.parseBoolean(args[0])) {
 			new TestWindow(bot, botInputOutput, chatDatastore);
@@ -136,7 +142,7 @@ public class Main {
 			return new NoOpChatDatastore();
 	}
 
-	private static ITransformer<ChatMessage, String> getChatProcessor(final String channel, final String botName) {
+	private static ITransformer<ChatMessage, String> getChatProcessor(final String channel, final String botName, final ChatMimic mimic, final IChatDatastore datastore) {
 		final ITransformer<ChatMessage, ChatMessage> wombatGreeter = new ITransformer<ChatMessage, ChatMessage>() {
 			final long timeBetweenGreetings = 3600000L;
 			long lastGreeting = -1;
@@ -159,17 +165,30 @@ public class Main {
 			}
 		};
 
+		final ITransformer<ChatMessage, ChatMessage> chatMimic = new ITransformer<ChatMessage, ChatMessage>() {
+			@Override
+			public ChatMessage transform(final ChatMessage in) {
+				final List<String> lines = new ArrayList<>();
+				final Iterator<ChatMessage> iter = datastore.getLastMessages(30);
+				while (iter.hasNext())
+					lines.add(iter.next().getMessage());
+				final String response = mimic.mimic(lines);
+
+				return in.getMessage().contains("@" + botName) ? new ChatMessage(channel, botName, response, System.currentTimeMillis()) : null;
+			}
+		};
+
 		final ITransformer<ChatMessage, ChatMessage> TEMP_END = new ITransformer<ChatMessage, ChatMessage>() {
 			@Override
 			public ChatMessage transform(final ChatMessage in) {
 				return null;
 			}
-
 		};
 
 		final List<ITransformer<ChatMessage, ChatMessage>> processors = new LinkedList<>();
 		//processors.add(wombatGreeter);
-		processors.add(TEMP_END);
+		//processors.add(TEMP_END);
+		processors.add(chatMimic);
 
 		final ITransformer<ChatMessage, ChatMessage> pipe = new TransformerPipe<ChatMessage>(processors);
 
@@ -182,9 +201,10 @@ public class Main {
 		};
 	}
 
-	private static IInherentBotProcessor getInherentProcessor() {
+	private static IInherentBotProcessor getInherentProcessor(final ChatMimic mimic, final IChatDatastore datastore) {
 		final List<IInherentBotProcessor> processors = new ArrayList<>();
-		processors.add(new TimedMessageBotProcessor("Wait", 60, 30));
+		processors.add(new ConcreteTimedMessageBotProcessor("Wait", 60, 30));
+		processors.add(new ChatMimicTimedMessageBotProcessor(mimic, datastore, 15, 15));
 
 		return new InherentBotProcessorPipe(processors);
 	}
