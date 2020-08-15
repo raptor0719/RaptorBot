@@ -20,8 +20,6 @@ public class ChatMimic {
 		final  Map<String, SignalWord> signalingWords = ChatMimicDictionary.getSignalWords(proximityLines, proximityWeights);
 
 		final int targetLength = generateLength(dictionary.getLengthWeights());
-		System.out.println("Target Length: " + targetLength);
-		System.out.println("Signaling words length: " + signalingWords.size());
 
 		final  Map<String, SignalWord> weightedFirstWords = getWeightedWords(dictionary.getFirstWords(), signalingWords);
 		final String firstWord = generateWord(weightedFirstWords);
@@ -30,8 +28,6 @@ public class ChatMimic {
 		String currentWord = firstWord;
 		int wordCount = 0;
 		while (currentWord != null) {
-			System.out.println("Phrase: " + phrase);
-			System.out.println("Current word: " + currentWord);
 			phrase = phrase + " " + currentWord;
 			wordCount++;
 
@@ -73,19 +69,14 @@ public class ChatMimic {
 			signals.add(curr);
 		}
 
-		System.out.println("\nGenerating a word...");
 		final double total = getTotalSignal(weightedWords);
-		System.out.println("Total: " + total);
-		System.out.println("Weighted word count: " + signals.size());
 
 		double generated = Math.random() * total;
-		System.out.println("Generated: " + generated);
 		int index = -1;
 		while (generated > 0) {
 			index++;
 			generated -= signals.get(index).signal;
 		}
-		System.out.println("Index: " + index);
 
 		return (index < 0) ? null : signals.get(index).word;
 	}

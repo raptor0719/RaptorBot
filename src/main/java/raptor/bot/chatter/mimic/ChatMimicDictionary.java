@@ -69,6 +69,7 @@ public class ChatMimicDictionary {
 	/* STATIC */
 
 	public static ChatMimicDictionary compile(final IChatDatastore chatDatastore) {
+		System.out.println("Compiling ChatMimic Dictionary...");
 		final int totalMessageCount = chatDatastore.getTotalMessageCount();
 
 		final double[] proximityWeights = getProximityWeights(PROXIMITY_LINE_COUNT);
@@ -79,15 +80,15 @@ public class ChatMimicDictionary {
 		final Map<String, Word> words = new HashMap<>();
 		final Map<Integer, Integer> lengthWeights = new HashMap<>();
 
-		System.out.println("TotalCount: " + totalMessageCount);
 		final Iterator<ChatMessage> messages = chatDatastore.getMessagesInRange(0, totalMessageCount - 1);
 		int i = 0;
 		while (messages.hasNext()) {
-			if (i%5000 == 0)
-				System.out.println(i);
+			if (i%1000 == 0)
+				System.out.println(String.format("Processed %s messages.", i));
 			final  Map<String, SignalWord> signalWords = getSignalWords(proximityLines, proximityWeights);
 
 			final String line = messages.next().getMessage();
+			i++;
 			if (line.startsWith("!"))
 				continue;
 			final String[] lineWords = line.split(" ");
@@ -96,7 +97,6 @@ public class ChatMimicDictionary {
 
 			for (int j = 0; j < lineWords.length; j++) {
 				final String currentWord = lineWords[j];
-//				System.out.print(" " + currentWord);
 
 				if (!containsWord(words, currentWord))
 					words.put(currentWord, new Word(currentWord));
@@ -118,10 +118,9 @@ public class ChatMimicDictionary {
 
 			if (proximityLines.size() > PROXIMITY_LINE_COUNT)
 				proximityLines.removeLast();
-//			System.out.println();
-			i++;
 		}
 
+		System.out.println("Finished compiling ChatMimic dictionary!");
 		return new ChatMimicDictionary(firstWords, words, lastWords, compileLengthWeights(lengthWeights));
 	}
 
@@ -134,7 +133,6 @@ public class ChatMimicDictionary {
 
 		final int[] result = new int[maxLength];
 		Arrays.fill(result, 0);
-//		System.out.println("Max length: " + maxLength);
 
 		for (final Map.Entry<Integer, Integer> e : lengthWeights.entrySet())
 			result[e.getKey() - 1] = e.getValue();
