@@ -99,5 +99,11 @@ public class ChatMimicTest {
 		public Iterator<ChatMessage> getMessagesInRange(int start, int end) {
 			return storedMessages.subList(start, end+1).iterator();
 		}
+
+		@Override
+		public Iterator<ChatMessage> getLastMessages(int length) {
+			// TODO Auto-generated method stub
+			return null;
+		}
 	}
 }
