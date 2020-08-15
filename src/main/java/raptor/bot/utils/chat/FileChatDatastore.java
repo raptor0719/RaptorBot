@@ -127,7 +127,13 @@ public class FileChatDatastore implements IChatDatastore {
 
 	@Override
 	public Iterator<ChatMessage> getMessagesInRange(int start, int end) {
-		// TODO Auto-generated method stub
+		// TODO Support this method
+		throw new RuntimeException("This method is not supported, yet.");
+	}
+
+	@Override
+	public Iterator<ChatMessage> getLastMessages(int length) {
+		// TODO Support this method
 		throw new RuntimeException("This method is not supported, yet.");
 	}
 

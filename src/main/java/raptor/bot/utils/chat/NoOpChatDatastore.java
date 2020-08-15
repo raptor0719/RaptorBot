@@ -34,4 +34,10 @@ public class NoOpChatDatastore implements IChatDatastore {
 		/* Return the signal that these messages do not exist */
 		return null;
 	}
+
+	@Override
+	public Iterator<ChatMessage> getLastMessages(int length) {
+		/* Return the signal that these messages do not exist */
+		return null;
+	}
 }

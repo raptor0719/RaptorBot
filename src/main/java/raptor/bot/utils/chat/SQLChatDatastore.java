@@ -107,16 +107,21 @@ public class SQLChatDatastore implements IChatDatastore {
 			public ChatMessage next() {
 				if (!currentIter.hasNext() && this.hasNext())
 					currentIter = getNextIterator();
+				currentStart++;
 				return currentIter.next();
 			}
 
 			private Iterator<ChatMessage> getNextIterator() {
 				final int amount = Math.min(end - currentStart + 1, BULK_OPERATION_RESULT_LIMIT);
 				final Iterator<ChatMessage> iter = getAllMessageInRange(currentStart, currentStart + amount - 1);
-				currentStart = currentStart + amount;
 				return iter;
 			}
 		};
+	}
+
+	@Override
+	public Iterator<ChatMessage> getLastMessages(final int length) {
+		return getMessagesInRange(getTotalMessageCount() - length, getTotalMessageCount());
 	}
 
 	private Iterator<ChatMessage> getAllMessageInRange(final int start, final int end) {

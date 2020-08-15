@@ -10,4 +10,5 @@ public interface IChatDatastore {
 	ChatMessage getMessage(int index);
 	int getMessageCountForUser(String user);
 	Iterator<ChatMessage> getMessagesInRange(int start, int end);
+	Iterator<ChatMessage> getLastMessages(int length);
 }
