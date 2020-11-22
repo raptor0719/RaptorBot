@@ -1,5 +1,10 @@
 package raptor.bot.chatter.mimic;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -13,9 +18,11 @@ import raptor.bot.api.chat.IChatDatastore;
 import raptor.bot.chatter.mimic.structures.SignalWord;
 import raptor.bot.chatter.mimic.structures.Word;
 import raptor.bot.irc.ChatMessage;
+import raptor.bot.utils.BinaryDataTools;
 
 public class ChatMimicDictionary {
 	public static final int PROXIMITY_LINE_COUNT = 30;
+	private static final byte[] MAGIC_NUMBER = new byte[]{1, 3, 3, 7};
 
 	private final List<String> firstWords;
 	private final Map<String, Word> words;
@@ -122,6 +129,150 @@ public class ChatMimicDictionary {
 
 		System.out.println("Finished compiling ChatMimic dictionary!");
 		return new ChatMimicDictionary(firstWords, words, lastWords, compileLengthWeights(lengthWeights));
+	}
+
+	public static void serialize(final ChatMimicDictionary dic, final OutputStream os) throws IOException {
+		final DataOutputStream dos = new DataOutputStream(os);
+
+		System.out.println("Serializing magic number...");
+		dos.write(MAGIC_NUMBER);
+
+		System.out.println("Serializing first words...");
+		serializeStringList(dic.firstWords, os);
+
+		System.out.println("Serializing words...");
+		final List<Word> words = extractKeys(dic.words);
+		dos.writeInt(words.size());
+		for (final Word w : words)
+			serializeWord(w, os);
+
+		System.out.println("Serializing last words...");
+		serializeStringList(dic.lastWords, os);
+
+		System.out.println("Serializing length weights...");
+		serializeIntArray(dic.lengthWeights, os);
+	}
+
+	public static ChatMimicDictionary marshal(final InputStream is) throws IOException {
+		final DataInputStream dis = new DataInputStream(is);
+
+		final byte[] magicNumber = new byte[4];
+		dis.read(magicNumber);
+
+		if (!Arrays.equals(magicNumber, MAGIC_NUMBER))
+			throw new RuntimeException("File was not a mimdic file.");
+
+		System.out.println("Marshalling first words...");
+		final List<String> firstWords = marshalStringList(dis);
+
+		System.out.println("Marshalling word list...");
+		final int wordListLength = dis.readInt();
+		final Map<String, Word> words = new HashMap<String, Word>();
+		for (int i = 0; i < wordListLength; i++) {
+			if (i % 100 == 0)
+				System.out.println("- " + i + " out of " + wordListLength + " words marshalled.");
+			final Word word = marshalWord(dis);
+			words.put(word.word, word);
+		}
+
+		System.out.println("Marshalling last words...");
+		final List<String> lastWords = marshalStringList(dis);
+
+		System.out.println("Marshalling length weights...");
+		final int[] lengthWeights = marshalIntArray(dis);
+
+		System.out.println("Compiling dictionary...");
+		return new ChatMimicDictionary(firstWords, words, lastWords, lengthWeights);
+	}
+
+	private static void serializeStringList(final List<String> list, final OutputStream os) throws IOException {
+		final DataOutputStream dos = new DataOutputStream(os);
+
+		dos.writeInt(list.size());
+
+		for (final String s : list) {
+			dos.write(BinaryDataTools.serializeString(s));
+		}
+	}
+
+	private static List<String> marshalStringList(final DataInputStream dis) throws IOException {
+		final int length = dis.readInt();
+		final List<String> strs = new ArrayList<String>();
+		for (int i = 0; i < length; i++)
+			strs.add(BinaryDataTools.marshalString(dis));
+
+		return strs;
+	}
+
+	private static void serializeIntArray(final int[] arr, final OutputStream os) throws IOException {
+		final DataOutputStream dos = new DataOutputStream(os);
+
+		dos.writeInt(arr.length);
+
+		for (final int i : arr) {
+			dos.writeInt(i);
+		}
+	}
+
+	private static int[] marshalIntArray(final DataInputStream dis) throws IOException {
+		final int length = dis.readInt();
+		final int[] arr = new int[length];
+		for (int i = 0; i < length; i++)
+			arr[i] = dis.readInt();
+
+		return arr;
+	}
+
+	private static void serializeWord(final Word w, final OutputStream os) throws IOException {
+		final DataOutputStream dos = new DataOutputStream(os);
+
+		dos.write(BinaryDataTools.serializeString(w.word));
+
+		final List<SignalWord> signalWords = extractKeys(w.signalWords);
+		dos.writeInt(signalWords.size());
+		for (final SignalWord sw : signalWords) {
+			serializeSignalWord(sw, os);
+		}
+
+		serializeStringList(w.followedWords, os);
+	}
+
+	private static Word marshalWord(final DataInputStream dis) throws IOException {
+		final String wordLiteral = BinaryDataTools.marshalString(dis);
+
+		final int signalWordsLength = dis.readInt();
+		final Map<String, SignalWord> signalWords = new HashMap<String, SignalWord>();
+		for (int i = 0; i < signalWordsLength; i++) {
+			final SignalWord sw = marshalSignalWord(dis);
+			signalWords.put(sw.word, sw);
+		}
+
+		final List<String> followedWords = marshalStringList(dis);
+
+		return new Word(wordLiteral, signalWords, followedWords);
+	}
+
+	private static void serializeSignalWord(final SignalWord w, final OutputStream os) throws IOException {
+		final DataOutputStream dos = new DataOutputStream(os);
+
+		dos.write(BinaryDataTools.serializeString(w.word));
+		dos.writeDouble(w.signal);
+	}
+
+	private static SignalWord marshalSignalWord(final DataInputStream dis) throws IOException {
+		final String wordLiteral = BinaryDataTools.marshalString(dis);
+		final double signal = dis.readDouble();
+
+		return new SignalWord(wordLiteral, signal);
+	}
+
+	private static <T> List<T> extractKeys(final Map<?, T> map) {
+		final List<T> list = new ArrayList<T>();
+
+		for (final Map.Entry<?, T> e : map.entrySet())
+			list.add(e.getValue());
+
+		return list;
 	}
 
 	/* INTERNAL */

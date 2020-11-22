@@ -1,8 +1,10 @@
 package raptor.bot.main;
 
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.UnknownHostException;
@@ -83,7 +85,10 @@ public class Main {
 		processors.add(new HelpCommandProcessor(processors));
 		processors.add(new AliasedCommandProcessor(aliasManager, processors));
 
-		final ChatMimicDictionary chatMimicDictionary = ChatMimicDictionary.compile(chatDatastore);
+		final ChatMimicDictionary chatMimicDictionary = (config.isCompileChatMimicDictionary()) ? ChatMimicDictionary.compile(chatDatastore) : readChatMimicDictionaryFromDisk();
+		if (config.isCompileChatMimicDictionary())
+			saveChatMimicDictionaryToDisk(chatMimicDictionary);
+
 		final ChatMimic chatMimic = new ChatMimic(chatMimicDictionary);
 
 		final RaptorBot bot = new RaptorBot(botMessageService, getChatProcessor(config.getIrcChannel(), config.getIrcUser(), chatMimic, chatDatastore), chatDatastore, new BotCommandListProcessor(processors), getInherentProcessor(chatMimic, chatDatastore));
@@ -133,6 +138,40 @@ public class Main {
 		}
 	}
 
+	private static ChatMimicDictionary readChatMimicDictionaryFromDisk() {
+		final File mimdicFile = new File("bot.mimdic");
+		FileInputStream is = null;
+		try {
+			if (!mimdicFile.exists())
+				throw new RuntimeException("bot.mimdic was not found in the bot directory.");
+
+			is = new FileInputStream(mimdicFile);
+
+			return ChatMimicDictionary.marshal(new BufferedInputStream(is, 2400));
+		} catch (Throwable t) {
+			throw new RuntimeException(t);
+		}
+	}
+
+	private static void saveChatMimicDictionaryToDisk(final ChatMimicDictionary dic) {
+		final File mimdicFile = new File("bot.mimdic");
+		FileOutputStream os = null;
+		try {
+			if (mimdicFile.exists())
+				mimdicFile.delete();
+
+			os = new FileOutputStream(mimdicFile);
+
+			ChatMimicDictionary.serialize(dic, os);
+		} catch (Throwable t) {
+			throw new RuntimeException(t);
+		} finally {
+			try {
+				os.close();
+			} catch (Throwable t) {};
+		}
+	}
+
 	private static IChatDatastore getConfiguredChatDataManager(final BotConfig config) {
 		if (config.isEnableChatDatastoreFile())
 			return new FileChatDatastore(config.getChatDatastoreFileDirectoryPath());
@@ -169,9 +208,7 @@ public class Main {
 			@Override
 			public ChatMessage transform(final ChatMessage in) {
 				final List<String> lines = new ArrayList<>();
-				final Iterator<ChatMessage> iter = datastore.getLastMessages(30);
-				while (iter.hasNext())
-					lines.add(iter.next().getMessage());
+				lines.add(in.getMessage());
 				final String response = mimic.mimic(lines);
 
 				return in.getMessage().contains("@" + botName) ? new ChatMessage(channel, botName, response, System.currentTimeMillis()) : null;

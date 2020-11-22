@@ -24,6 +24,8 @@ public class BotConfig {
 	private final String ircPassword;
 	private final String ircChannel;
 
+	private final boolean compileChatMimicDictionary;
+
 	private final boolean enableChatDatastoreSql;
 	private final String chatDatastoreSqlConnectionURL;
 	private final String chatDatastoreSqlSchema;
@@ -50,6 +52,8 @@ public class BotConfig {
 		ircUser = checkExistsOrError("irc-user", props);
 		ircPassword = readIrcPassword(checkExistsOrError("irc-password-file", props));
 		ircChannel = checkExistsOrError("irc-channel", props);
+
+		compileChatMimicDictionary = Boolean.parseBoolean(props.getProperty("compile-chat-mimic-dictionary", "false"));
 
 		enableChatDatastoreFile = Boolean.parseBoolean(props.getProperty("enable-chatDatastore-file", "false"));
 		chatDatastoreFileDirectoryPath = (enableChatDatastoreFile) ? props.getProperty("chatDatastore-file-dirPath") : null;
@@ -102,6 +106,10 @@ public class BotConfig {
 
 	public String getIrcChannel() {
 		return ircChannel;
+	}
+
+	public boolean isCompileChatMimicDictionary() {
+		return compileChatMimicDictionary;
 	}
 
 	public boolean isEnableChatDatastoreSql() {

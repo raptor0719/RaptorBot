@@ -27,7 +27,7 @@ public class ChatMimicTimedMessageBotProcessor extends TimedMessageBotProcessor 
 	@Override
 	public String getMessage() {
 		final List<String> lines = new ArrayList<>();
-		final Iterator<ChatMessage> iter = datastore.getLastMessages(30);
+		final Iterator<ChatMessage> iter = datastore.getLastMessages(5);
 		while (iter.hasNext())
 			lines.add(iter.next().getMessage());
 		return mimic.mimic(lines);
