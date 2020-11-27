@@ -33,6 +33,6 @@ public class BinaryDataTools {
 		for (int i = 0; i < length; i++)
 			buffer[i] = dis.readChar();
 
-		return buffer.toString();
+		return new String(buffer);
 	}
 }
