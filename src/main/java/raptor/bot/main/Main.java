@@ -34,6 +34,7 @@ import raptor.bot.command.processors.AliasedCommandProcessor;
 import raptor.bot.command.processors.ChatStatsCommandProcessor;
 import raptor.bot.command.processors.HelpCommandProcessor;
 import raptor.bot.command.processors.MadlibCommandProcessor;
+import raptor.bot.command.processors.MagicBallCommandProcessor;
 import raptor.bot.command.processors.MemeCommandProcessor;
 import raptor.bot.command.processors.SoundCommandProcessor;
 import raptor.bot.command.processors.WisdomCommandProcessor;
@@ -82,6 +83,7 @@ public class Main {
 		processors.add(new WisdomCommandProcessor(chatDatastore));
 		processors.add(new SoundCommandProcessor(new SoundManager(config.getSoundsFilePath())));
 		processors.add(new MemeCommandProcessor(new MemeManager(config.getMemeFilePath())));
+		processors.add(new MagicBallCommandProcessor());
 		processors.add(new HelpCommandProcessor(processors));
 		processors.add(new AliasedCommandProcessor(aliasManager, processors));
 
