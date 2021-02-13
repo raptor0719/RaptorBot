@@ -26,6 +26,7 @@ import raptor.bot.api.chat.IChatDatastore;
 import raptor.bot.api.message.IMessageService;
 import raptor.bot.chatter.mimic.ChatMimic;
 import raptor.bot.chatter.mimic.ChatMimicDictionary;
+import raptor.bot.chatter.processors.CaveBobberTimedMessageBotProcessor;
 import raptor.bot.chatter.processors.ChatMimicTimedMessageBotProcessor;
 import raptor.bot.chatter.processors.ConcreteTimedMessageBotProcessor;
 import raptor.bot.command.BotCommandListProcessor;
@@ -242,8 +243,9 @@ public class Main {
 
 	private static IInherentBotProcessor getInherentProcessor(final ChatMimic mimic, final IChatDatastore datastore) {
 		final List<IInherentBotProcessor> processors = new ArrayList<>();
-		processors.add(new ConcreteTimedMessageBotProcessor("Wait", 60, 30));
+		processors.add(new ConcreteTimedMessageBotProcessor("Wait", 70, 30));
 		processors.add(new ChatMimicTimedMessageBotProcessor(mimic, datastore, 15, 15));
+		processors.add(new CaveBobberTimedMessageBotProcessor(datastore, 20, 30));
 
 		return new InherentBotProcessorPipe(processors);
 	}
