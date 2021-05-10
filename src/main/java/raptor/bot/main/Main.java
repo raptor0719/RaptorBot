@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
@@ -20,12 +19,14 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import raptor.bot.api.IAliasManager;
 import raptor.bot.api.IBotProcessor;
+import raptor.bot.api.IChatProcessor;
 import raptor.bot.api.IInherentBotProcessor;
-import raptor.bot.api.ITransformer;
 import raptor.bot.api.chat.IChatDatastore;
 import raptor.bot.api.message.IMessageService;
+import raptor.bot.chat.ChatProcessorPipe;
 import raptor.bot.chatter.mimic.ChatMimic;
 import raptor.bot.chatter.mimic.ChatMimicDictionary;
+import raptor.bot.chatter.mimic.chat.processor.ChatMimicChatProcessor;
 import raptor.bot.chatter.processors.CaveBobberTimedMessageBotProcessor;
 import raptor.bot.chatter.processors.ChatMimicTimedMessageBotProcessor;
 import raptor.bot.chatter.processors.ConcreteTimedMessageBotProcessor;
@@ -49,7 +50,6 @@ import raptor.bot.utils.MemeManager;
 import raptor.bot.utils.MemePlayer;
 import raptor.bot.utils.QueueBasedMessageService;
 import raptor.bot.utils.SoundManager;
-import raptor.bot.utils.TransformerPipe;
 import raptor.bot.utils.chat.FileChatDatastore;
 import raptor.bot.utils.chat.NoOpChatDatastore;
 import raptor.bot.utils.chat.SQLChatDatastore;
@@ -94,7 +94,7 @@ public class Main {
 
 		final ChatMimic chatMimic = new ChatMimic(chatMimicDictionary);
 
-		final RaptorBot bot = new RaptorBot(botMessageService, getChatProcessor(config.getIrcChannel(), config.getIrcUser(), chatMimic, chatDatastore), chatDatastore, new BotCommandListProcessor(processors), getInherentProcessor(chatMimic, chatDatastore));
+		final RaptorBot bot = new RaptorBot(botMessageService, getChatProcessor(chatMimic, config.getIrcUser()), chatDatastore, new BotCommandListProcessor(processors), getInherentProcessor(chatMimic, chatDatastore));
 
 		if (args.length >= 1 && Boolean.parseBoolean(args[0])) {
 			new TestWindow(bot, botInputOutput, chatDatastore);
@@ -184,61 +184,12 @@ public class Main {
 			return new NoOpChatDatastore();
 	}
 
-	private static ITransformer<ChatMessage, String> getChatProcessor(final String channel, final String botName, final ChatMimic mimic, final IChatDatastore datastore) {
-		final ITransformer<ChatMessage, ChatMessage> wombatGreeter = new ITransformer<ChatMessage, ChatMessage>() {
-			final long timeBetweenGreetings = 3600000L;
-			long lastGreeting = -1;
-			@Override
-			public ChatMessage transform(final ChatMessage in) {
-				if (in == null)
-					return null;
+	private static IChatProcessor getChatProcessor(final ChatMimic mimic, final String botName) {
+		final List<IChatProcessor> processors = new ArrayList<>();
 
-				if (in.getUser().toLowerCase().contains("wombat")) {
-					if ((System.currentTimeMillis() - lastGreeting) >= timeBetweenGreetings || lastGreeting < 0) {
-						lastGreeting = System.currentTimeMillis();
-						return new ChatMessage(channel, botName, "Welcome to the chat room!", lastGreeting);
-					} else {
-						// Increase the time to next greeting by 1 minute every time wombat says something in chat
-						lastGreeting += 60000;
-					}
-				}
+		processors.add(new ChatMimicChatProcessor(mimic, botName));
 
-				return null;
-			}
-		};
-
-		final ITransformer<ChatMessage, ChatMessage> chatMimic = new ITransformer<ChatMessage, ChatMessage>() {
-			@Override
-			public ChatMessage transform(final ChatMessage in) {
-				final List<String> lines = new ArrayList<>();
-				lines.add(in.getMessage());
-				final String response = mimic.mimic(lines);
-
-				return in.getMessage().contains("@" + botName) ? new ChatMessage(channel, botName, response, System.currentTimeMillis()) : null;
-			}
-		};
-
-		final ITransformer<ChatMessage, ChatMessage> TEMP_END = new ITransformer<ChatMessage, ChatMessage>() {
-			@Override
-			public ChatMessage transform(final ChatMessage in) {
-				return null;
-			}
-		};
-
-		final List<ITransformer<ChatMessage, ChatMessage>> processors = new LinkedList<>();
-		//processors.add(wombatGreeter);
-		//processors.add(TEMP_END);
-		processors.add(chatMimic);
-
-		final ITransformer<ChatMessage, ChatMessage> pipe = new TransformerPipe<ChatMessage>(processors);
-
-		return new ITransformer<ChatMessage, String>() {
-			@Override
-			public String transform(final ChatMessage in) {
-				final ChatMessage message = pipe.transform(in);
-				return (message == null) ? "" : message.getMessage();
-			}
-		};
+		return new ChatProcessorPipe(processors);
 	}
 
 	private static IInherentBotProcessor getInherentProcessor(final ChatMimic mimic, final IChatDatastore datastore) {

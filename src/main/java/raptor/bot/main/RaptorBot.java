@@ -3,20 +3,20 @@ package raptor.bot.main;
 import java.util.Iterator;
 
 import raptor.bot.api.IBotProcessor;
+import raptor.bot.api.IChatProcessor;
 import raptor.bot.api.IInherentBotProcessor;
-import raptor.bot.api.ITransformer;
 import raptor.bot.api.chat.IChatDatastore;
 import raptor.bot.api.message.IMessageService;
 import raptor.bot.irc.ChatMessage;
 
 public class RaptorBot {
 	private final IMessageService<ChatMessage, String> messageService;
-	private final ITransformer<ChatMessage, String> chatProcessor;
+	private final IChatProcessor chatProcessor;
 	private final IChatDatastore chatDatastore;
 	private final IBotProcessor<ChatMessage> botProcessor;
 	private final IInherentBotProcessor inherentProcessor;
 
-	public RaptorBot(final IMessageService<ChatMessage, String> messageService, final ITransformer<ChatMessage, String> chatProcessor, final IChatDatastore chatDatastore, final IBotProcessor<ChatMessage> botProcessor, final IInherentBotProcessor inherentProcessor) {
+	public RaptorBot(final IMessageService<ChatMessage, String> messageService, final IChatProcessor chatProcessor, final IChatDatastore chatDatastore, final IBotProcessor<ChatMessage> botProcessor, final IInherentBotProcessor inherentProcessor) {
 		this.messageService = messageService;
 		this.chatProcessor = chatProcessor;
 		this.chatDatastore = chatDatastore;
@@ -35,7 +35,7 @@ public class RaptorBot {
 			final boolean wasProcessed = botProcessor.process(message, messageService);
 
 			if (!wasProcessed)
-				messageService.sendMessage(chatProcessor.transform(message));
+				chatProcessor.process(message, messageService);
 		}
 	}
 
