@@ -50,6 +50,7 @@ import raptor.bot.utils.MemeManager;
 import raptor.bot.utils.MemePlayer;
 import raptor.bot.utils.QueueBasedMessageService;
 import raptor.bot.utils.SoundManager;
+import raptor.bot.utils.SoundPlayer;
 import raptor.bot.utils.chat.FileChatDatastore;
 import raptor.bot.utils.chat.NoOpChatDatastore;
 import raptor.bot.utils.chat.SQLChatDatastore;
@@ -87,6 +88,8 @@ public class Main {
 		processors.add(new MagicBallCommandProcessor());
 		processors.add(new HelpCommandProcessor(processors));
 		processors.add(new AliasedCommandProcessor(aliasManager, processors));
+
+		SoundPlayer.PLAY_SOUNDS_CONCURRENT = config.isPlaySoundsConcurrently();
 
 		final ChatMimicDictionary chatMimicDictionary = (config.isCompileChatMimicDictionary()) ? ChatMimicDictionary.compile(chatDatastore) : readChatMimicDictionaryFromDisk();
 		if (config.isCompileChatMimicDictionary())

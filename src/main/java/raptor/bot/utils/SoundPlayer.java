@@ -14,6 +14,8 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
 public class SoundPlayer {
+	public static boolean PLAY_SOUNDS_CONCURRENT = true;
+
 	private static Thread soundThread = null;
 	private static final Queue<InputStream> soundQueue = new ConcurrentLinkedQueue<InputStream>();
 	/**
@@ -24,6 +26,24 @@ public class SoundPlayer {
 	 * @throws LineUnavailableException
 	 */
 	public static void playSound(final InputStream audio) {
+		if (PLAY_SOUNDS_CONCURRENT) {
+			final Thread thread = new Thread() {
+				@Override
+				public void run() {
+					try {
+						play(audio);
+					} catch (Exception e) {
+						System.err.println("Encountered error when attempting to play sound...");
+						e.printStackTrace();
+					}
+				}
+			};
+
+			thread.start();
+
+			return;
+		}
+
 		if (soundThread != null) {
 			soundQueue.add(audio);
 			return;

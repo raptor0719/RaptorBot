@@ -15,6 +15,8 @@ public class BotConfig {
 	private final String soundsFilePath;
 	private final String dictionaryFilePath;
 
+	private final boolean playSoundsConcurrently;
+
 	private final String memesFilePath;
 	private final String memesActiveFilePath;
 
@@ -43,6 +45,8 @@ public class BotConfig {
 		aliasFilePath = props.getProperty("alias-file", "aliases.txt");
 		soundsFilePath = props.getProperty("sounds-file", Paths.get("sounds", "sounds.properties").toString());
 		dictionaryFilePath = props.getProperty("dictionary-file", "dictionary.txt");
+
+		playSoundsConcurrently = Boolean.parseBoolean(props.getProperty("play-sounds-concurrently", "true"));
 
 		memesFilePath = props.getProperty("memes-file", Paths.get("memes", "memes.properties").toString());
 		memesActiveFilePath = props.getProperty("memes-active-file", "current.gif");
@@ -78,6 +82,10 @@ public class BotConfig {
 
 	public String getDictionaryFilePath() {
 		return dictionaryFilePath;
+	}
+
+	public boolean isPlaySoundsConcurrently() {
+		return playSoundsConcurrently;
 	}
 
 	public String getMemeFilePath() {
