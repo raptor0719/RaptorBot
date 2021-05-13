@@ -35,4 +35,12 @@ public class BinaryDataTools {
 
 		return new String(buffer);
 	}
+
+	public static String readBinaryString(final int length, final DataInputStream dis) throws IOException {
+		final char[] buffer = new char[length];
+		for (int i = 0; i < length; i++)
+			buffer[i] = (char) dis.readByte();
+
+		return new String(buffer);
+	}
 }
