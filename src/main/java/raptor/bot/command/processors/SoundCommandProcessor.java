@@ -9,7 +9,7 @@ import raptor.bot.command.BotMethod;
 import raptor.bot.command.commands.BotCommand;
 import raptor.bot.command.commands.SoundCommand;
 import raptor.bot.irc.ChatMessage;
-import raptor.bot.utils.SoundPlayer;
+import raptor.bot.utils.audio.SoundPlayer;
 
 public class SoundCommandProcessor extends BotCommandProcessor {
 	private final ISoundManager<String> soundManager;

@@ -50,7 +50,7 @@ import raptor.bot.utils.MemeManager;
 import raptor.bot.utils.MemePlayer;
 import raptor.bot.utils.QueueBasedMessageService;
 import raptor.bot.utils.SoundManager;
-import raptor.bot.utils.SoundPlayer;
+import raptor.bot.utils.audio.SoundPlayer;
 import raptor.bot.utils.chat.FileChatDatastore;
 import raptor.bot.utils.chat.NoOpChatDatastore;
 import raptor.bot.utils.chat.SQLChatDatastore;
