@@ -97,9 +97,9 @@ public class Main {
 		processors.add(new SoundCommandProcessor(new SoundManager(config.getSoundsFilePath())));
 		processors.add(new MemeCommandProcessor(new MemeManager(config.getMemeFilePath())));
 		processors.add(new MagicBallCommandProcessor());
+		processors.add(new TextToSpeechCommandProcessor(buildTextToSpeech(config.getTextToSpeechDirPath())));
 		processors.add(new HelpCommandProcessor(processors));
 		processors.add(new AliasedCommandProcessor(aliasManager, processors));
-		processors.add(new TextToSpeechCommandProcessor(buildTextToSpeech(config.getTextToSpeechDirPath())));
 
 		SoundPlayer.PLAY_SOUNDS_CONCURRENT = config.isPlaySoundsConcurrently();
 
