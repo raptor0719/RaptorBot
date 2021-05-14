@@ -2,13 +2,16 @@ package raptor.bot.tts;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 public class PhonemeParser {
 	private static final Map<String, List<Phoneme>> GRAPHEME_MAP;
+	private static final Map<String, List<Phoneme>> SPLIT_GPAPHEME_MAP;
 	private static final int MAX_LENGTH_GRAPHEME;
 
 	static {
@@ -20,7 +23,7 @@ public class PhonemeParser {
 		graphemes.put(Phoneme.G, new String[] {"g", "gg", "gh", "gu", "gue"});
 		graphemes.put(Phoneme.H, new String[] {"h", "wh"});
 		graphemes.put(Phoneme.DGE, new String[] {"j", "ge", "g", "dge", "di", "gg"});
-		graphemes.put(Phoneme.CK, new String[] {"k", "c", "ch", "cc", "lk", "qu", "ck", "x"});
+		graphemes.put(Phoneme.CK, new String[] {"k", "c", "ch", "cc", "lk", "qu", "ck", "x", "q"});
 		graphemes.put(Phoneme.L, new String[] {"l", "ll"});
 		graphemes.put(Phoneme.M, new String[] {"m", "mm", "mb", "mn", "lm"});
 		graphemes.put(Phoneme.N, new String[] {"n", "nn", "kn", "gn", "pn", "mn"});
@@ -51,7 +54,7 @@ public class PhonemeParser {
 		graphemes.put(Phoneme.UE, new String[] {"o", "oo", "ew", "ue", "u_e", "oe", "ough", "ui", "oew", "ou"});
 		graphemes.put(Phoneme.OI, new String[] {"oi", "oy", "uoy"});
 		graphemes.put(Phoneme.OW, new String[] {"ow", "ou", "ough"});
-		graphemes.put(Phoneme.UR, new String[] {"a", "er", "i", "ar", "our", "ur"});
+		graphemes.put(Phoneme.UR, new String[] {"a", "er", "ar", "our", "ur"});
 		graphemes.put(Phoneme.AIR, new String[] {"air", "are", "ear", "ere", "eir", "ayer"});
 		graphemes.put(Phoneme.AH, new String[] {"a"});
 		graphemes.put(Phoneme.IR, new String[] {"ir", "er", "ur", "ear", "or", "our", "yr"});
@@ -60,10 +63,31 @@ public class PhonemeParser {
 		graphemes.put(Phoneme.URE, new String[] {"ure", "our"});
 
 		final Map<String, List<Phoneme>> graphemeMap = new HashMap<>();
+		final Map<String, List<Phoneme>> splitGraphemeMap = new HashMap<>();
 		int maxLengthGrapheme = -1;
 
-		for (final Map.Entry<Phoneme, String[]> entry : graphemes.entrySet()) {
+		final List<Map.Entry<Phoneme, String[]>> sortedEntries = graphemes.entrySet().stream().sorted(new Comparator<Map.Entry<Phoneme, String[]>>() {
+			@Override
+			public int compare(final Map.Entry<Phoneme, String[]> o1, final Map.Entry<Phoneme, String[]> o2) {
+				return o1.getKey().name().compareTo(o2.getKey().name());
+			}
+		}).collect(Collectors.toList());
+
+		for (final Map.Entry<Phoneme, String[]> entry : sortedEntries) {
 			for (final String grapheme : entry.getValue()) {
+				if (grapheme.contains("_")) {
+					if (!splitGraphemeMap.containsKey(grapheme)) {
+						final List<Phoneme> phonemeList = new ArrayList<>();
+						splitGraphemeMap.put(grapheme, phonemeList);
+					}
+
+					splitGraphemeMap.get(grapheme).add(entry.getKey());
+
+					maxLengthGrapheme = Math.max(maxLengthGrapheme, grapheme.length());
+
+					continue;
+				}
+
 				if (!graphemeMap.containsKey(grapheme)) {
 					final List<Phoneme> phonemeList = new ArrayList<>();
 					graphemeMap.put(grapheme, phonemeList);
@@ -76,17 +100,22 @@ public class PhonemeParser {
 		}
 
 		GRAPHEME_MAP = Collections.unmodifiableMap(graphemeMap);
+		SPLIT_GPAPHEME_MAP = Collections.unmodifiableMap(splitGraphemeMap);
 		MAX_LENGTH_GRAPHEME = maxLengthGrapheme;
 	}
 
 	public List<Phoneme> parse(final String input) throws Exception {
+		final String uncased = input.toLowerCase();
+
 		final List<Phoneme> phonemes = new ArrayList<>();
 
-		final String[] sentences = input.split("[!?.][ ]?");
+		final String[] sentences = uncased.split("[!?.][ ]?");
 
-		for (final String sentence : sentences) {
-			parseSentence(sentence, phonemes);
-			phonemes.add(Phoneme.SENTENCE_SPACE);
+		for (int i = 0; i < sentences.length; i++) {
+			parseSentence(sentences[i], phonemes);
+
+			if (i < sentences.length - 1)
+				phonemes.add(Phoneme.SENTENCE_SPACE);
 		}
 
 		return phonemes;
@@ -95,9 +124,11 @@ public class PhonemeParser {
 	private void parseSentence(final String sentence, final List<Phoneme> phonemes) throws Exception {
 		final String[] words = sentence.split("[;,]?[ ]|[;,]");
 
-		for (final String word : words) {
-			parseWord(word, phonemes);
-			phonemes.add(Phoneme.WORD_SPACE);
+		for (int i = 0; i < words.length; i++) {
+			parseWord(words[i], phonemes);
+
+			if (i < words.length - 1)
+				phonemes.add(Phoneme.WORD_SPACE);
 		}
 	}
 
@@ -107,27 +138,51 @@ public class PhonemeParser {
 		while (current.length() > 0) {
 			final int maxLength = Math.min(MAX_LENGTH_GRAPHEME, current.length());
 
-			String potentialGrapheme = null;
 			boolean foundGrapheme = false;
 			for (int l = maxLength; l > 0; l--) {
-				potentialGrapheme = current.substring(0, l);
+				final String potentialGrapheme = current.substring(0, l);
 
-				if (!GRAPHEME_MAP.containsKey(potentialGrapheme))
-					continue;
+				if (matchesSplitGrapheme(potentialGrapheme)) {
+					final String splitGrapheme = potentialGrapheme.charAt(0) + "_" + potentialGrapheme.charAt(2);
+					phonemes.add(getPhoneme(splitGrapheme));
 
-				foundGrapheme = true;
-				break;
+					current = current.charAt(1) + ((current.length() > 3) ? current.substring(3) : "");
+
+					System.out.println(potentialGrapheme);
+					foundGrapheme = true;
+					break;
+				} else if (GRAPHEME_MAP.containsKey(potentialGrapheme)) {
+					phonemes.add(getPhoneme(potentialGrapheme));
+
+					current = current.substring(potentialGrapheme.length());
+
+					System.out.println(potentialGrapheme);
+					foundGrapheme = true;
+					break;
+				}
 			}
 
 			if (!foundGrapheme)
 				throw new Exception("Unable to find valid grapheme for word: " + word);
-
-			current = current.substring(potentialGrapheme.length());
-			phonemes.add(getPhoneme(potentialGrapheme));
 		}
 	}
 
+	private boolean matchesSplitGrapheme(final String grapheme) {
+		for (final Map.Entry<String, List<Phoneme>> e : SPLIT_GPAPHEME_MAP.entrySet()) {
+			final String matchString = e.getKey().charAt(0) + "[a-zA-Z]" + e.getKey().charAt(2);
+			if (grapheme.matches(matchString))
+				return true;
+		}
+		return false;
+	}
+
 	private Phoneme getPhoneme(final String grapheme) {
-		return GRAPHEME_MAP.get(grapheme).get(0);
+		return (grapheme.contains("_")) ?
+				SPLIT_GPAPHEME_MAP.get(grapheme).get(getRandomPhoneme(SPLIT_GPAPHEME_MAP.get(grapheme).size())) :
+					GRAPHEME_MAP.get(grapheme).get(getRandomPhoneme(GRAPHEME_MAP.get(grapheme).size()));
+	}
+
+	private int getRandomPhoneme(final int count) {
+		return (int) (Math.random() * count);
 	}
 }
