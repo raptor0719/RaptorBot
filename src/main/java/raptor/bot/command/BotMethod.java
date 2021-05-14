@@ -6,6 +6,7 @@ import raptor.bot.command.commands.HelpCommand;
 import raptor.bot.command.commands.MagicBallCommand;
 import raptor.bot.command.commands.MemeCommand;
 import raptor.bot.command.commands.SoundCommand;
+import raptor.bot.command.commands.TextToSpeechCommand;
 import raptor.bot.command.commands.WisdomCommand;
 import raptor.bot.command.commands.alias.AliasCreateCommand;
 import raptor.bot.command.commands.alias.AliasDeleteCommand;
@@ -83,6 +84,12 @@ public enum BotMethod {
 		@Override
 		public BotCommand parse(final String s) {
 			return new MagicBallCommand(s);
+		}
+	}),
+	TEXT_TO_SPEECH("tts", new IParser<BotCommand>() {
+		@Override
+		public BotCommand parse(final String s) {
+			return new TextToSpeechCommand(s);
 		}
 	});
 
