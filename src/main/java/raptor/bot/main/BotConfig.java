@@ -14,6 +14,7 @@ public class BotConfig {
 	private final String aliasFilePath;
 	private final String soundsFilePath;
 	private final String dictionaryFilePath;
+	private final String textToSpeechDirPath;
 
 	private final boolean playSoundsConcurrently;
 
@@ -45,6 +46,7 @@ public class BotConfig {
 		aliasFilePath = props.getProperty("alias-file", "aliases.txt");
 		soundsFilePath = props.getProperty("sounds-file", Paths.get("sounds", "sounds.properties").toString());
 		dictionaryFilePath = props.getProperty("dictionary-file", "dictionary.txt");
+		textToSpeechDirPath = props.getProperty("text-to-speech-directory", Paths.get("tts").toString());
 
 		playSoundsConcurrently = Boolean.parseBoolean(props.getProperty("play-sounds-concurrently", "true"));
 
@@ -82,6 +84,10 @@ public class BotConfig {
 
 	public String getDictionaryFilePath() {
 		return dictionaryFilePath;
+	}
+
+	public String getTextToSpeechDirPath() {
+		return textToSpeechDirPath;
 	}
 
 	public boolean isPlaySoundsConcurrently() {
