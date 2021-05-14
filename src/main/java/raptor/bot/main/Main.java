@@ -6,16 +6,21 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.UnknownHostException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
+import javax.sound.sampled.AudioFormat;
 
 import raptor.bot.api.IAliasManager;
 import raptor.bot.api.IBotProcessor;
@@ -39,10 +44,15 @@ import raptor.bot.command.processors.MadlibCommandProcessor;
 import raptor.bot.command.processors.MagicBallCommandProcessor;
 import raptor.bot.command.processors.MemeCommandProcessor;
 import raptor.bot.command.processors.SoundCommandProcessor;
+import raptor.bot.command.processors.TextToSpeechCommandProcessor;
 import raptor.bot.command.processors.WisdomCommandProcessor;
 import raptor.bot.irc.ChatMessage;
 import raptor.bot.irc.IRCClient;
 import raptor.bot.test.utils.TestWindow;
+import raptor.bot.tts.Phoneme;
+import raptor.bot.tts.PhonemeAudioManager;
+import raptor.bot.tts.PhonemeParser;
+import raptor.bot.tts.TextToSpeech;
 import raptor.bot.utils.AliasManager;
 import raptor.bot.utils.InherentBotProcessorPipe;
 import raptor.bot.utils.MadlibManager;
@@ -51,6 +61,7 @@ import raptor.bot.utils.MemePlayer;
 import raptor.bot.utils.QueueBasedMessageService;
 import raptor.bot.utils.SoundManager;
 import raptor.bot.utils.audio.SoundPlayer;
+import raptor.bot.utils.audio.WavSoundBite;
 import raptor.bot.utils.chat.FileChatDatastore;
 import raptor.bot.utils.chat.NoOpChatDatastore;
 import raptor.bot.utils.chat.SQLChatDatastore;
@@ -88,6 +99,7 @@ public class Main {
 		processors.add(new MagicBallCommandProcessor());
 		processors.add(new HelpCommandProcessor(processors));
 		processors.add(new AliasedCommandProcessor(aliasManager, processors));
+		processors.add(new TextToSpeechCommandProcessor(buildTextToSpeech(config.getTextToSpeechDirPath())));
 
 		SoundPlayer.PLAY_SOUNDS_CONCURRENT = config.isPlaySoundsConcurrently();
 
@@ -274,6 +286,63 @@ public class Main {
 		} finally {
 			try {
 				fis.close();
+			} catch (Throwable t) {}
+		}
+	}
+
+	private static TextToSpeech buildTextToSpeech(final String phonemeDir) {
+		try {
+			final PhonemeAudioManager audioManager = new PhonemeAudioManager(buildPhonemeMap(phonemeDir), buildPhonemeAudioFormat(phonemeDir));
+			return new TextToSpeech(audioManager, new PhonemeParser());
+		} catch (Throwable t) {
+			throw new RuntimeException(t);
+		}
+	}
+
+	private static AudioFormat buildPhonemeAudioFormat(final String phonemeDir) throws IOException {
+		final File file = new File(Paths.get(phonemeDir, "tts.properties").toString());
+		InputStream stream = null;
+
+		try {
+			stream = new FileInputStream(file);
+
+			final Properties audioFormatProps = new Properties();
+			audioFormatProps.load(stream);
+
+			final int numChannels = Integer.parseInt(audioFormatProps.getProperty("number-of-channels"));
+			final int sampleRate = Integer.parseInt(audioFormatProps.getProperty("sample-rate"));
+			final int bitsPerSample = Integer.parseInt(audioFormatProps.getProperty("bits-per-sample"));
+
+			return new AudioFormat(sampleRate, bitsPerSample, numChannels, false, false);
+		} finally {
+			try {
+				if (stream != null)
+					stream.close();
+			} catch (Throwable t) {}
+		}
+	}
+
+	private static Map<Phoneme, byte[]> buildPhonemeMap(final String phonemeDir) throws IOException {
+		final Map<Phoneme, byte[]> phonemeMap = new HashMap<>();
+
+		for (final Phoneme p : Phoneme.values())
+			phonemeMap.put(p, buildPhonemeBite(Paths.get(phonemeDir, p.name() + ".wav").toString()).getData());
+
+		return phonemeMap;
+	}
+
+	private static WavSoundBite buildPhonemeBite(final String wavFilePath) throws IOException {
+		final File wavFile = new File(wavFilePath);
+		InputStream stream = null;
+
+		try {
+			stream = new FileInputStream(wavFile);
+
+			return WavSoundBite.read(stream);
+		} finally {
+			try {
+				if (stream != null)
+					stream.close();
 			} catch (Throwable t) {}
 		}
 	}
