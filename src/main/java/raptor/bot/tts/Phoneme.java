@@ -29,7 +29,7 @@ public enum Phoneme {
 
 	// Vowels
 	A, // cat
-	AI, // maid
+	AY, // maid
 	E, // end
 	EE, // meat
 	I, // it

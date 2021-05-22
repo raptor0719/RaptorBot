@@ -49,6 +49,7 @@ import raptor.bot.command.processors.WisdomCommandProcessor;
 import raptor.bot.irc.ChatMessage;
 import raptor.bot.irc.IRCClient;
 import raptor.bot.test.utils.TestWindow;
+import raptor.bot.tts.DefinedWordPhonemeManager;
 import raptor.bot.tts.Phoneme;
 import raptor.bot.tts.PhonemeAudioManager;
 import raptor.bot.tts.PhonemeParser;
@@ -293,7 +294,7 @@ public class Main {
 	private static TextToSpeech buildTextToSpeech(final String phonemeDir) {
 		try {
 			final PhonemeAudioManager audioManager = new PhonemeAudioManager(buildPhonemeMap(phonemeDir), buildPhonemeAudioFormat(phonemeDir));
-			return new TextToSpeech(audioManager, new PhonemeParser());
+			return new TextToSpeech(audioManager, new PhonemeParser(buildDefinedWordManager(phonemeDir)));
 		} catch (Throwable t) {
 			throw new RuntimeException(t);
 		}
@@ -329,6 +330,22 @@ public class Main {
 			phonemeMap.put(p, buildPhonemeBite(Paths.get(phonemeDir, p.name() + ".wav").toString()).getData());
 
 		return phonemeMap;
+	}
+
+	private static DefinedWordPhonemeManager buildDefinedWordManager(final String phonemeDir) throws IOException {
+		final File file = new File(Paths.get(phonemeDir, "definedWords.txt").toString());
+		InputStream stream = null;
+
+		try {
+			stream = new FileInputStream(file);
+
+			return new DefinedWordPhonemeManager(DefinedWordPhonemeManager.buildDefinedWordPhonemeMap(stream));
+		} finally {
+			try {
+				if (stream != null)
+					stream.close();
+			} catch (Throwable t) {}
+		}
 	}
 
 	private static WavSoundBite buildPhonemeBite(final String wavFilePath) throws IOException {

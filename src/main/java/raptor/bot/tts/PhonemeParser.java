@@ -18,49 +18,49 @@ public class PhonemeParser {
 		final Map<Phoneme, String[]> graphemes = new HashMap<>();
 
 		graphemes.put(Phoneme.B, new String[] {"b", "bb"});
-		graphemes.put(Phoneme.D, new String[] {"d", "dd", "ed"});
-		graphemes.put(Phoneme.F, new String[] {"f", "ff", "ph", "gh", "lf", "ft"});
-		graphemes.put(Phoneme.G, new String[] {"g", "gg", "gh", "gu", "gue"});
+		graphemes.put(Phoneme.D, new String[] {"d", "dd"});
+		graphemes.put(Phoneme.F, new String[] {"f", "ff", "ph"});
+		graphemes.put(Phoneme.G, new String[] {"g", "gg", "gh"});
 		graphemes.put(Phoneme.H, new String[] {"h", "wh"});
-		graphemes.put(Phoneme.DGE, new String[] {"j", "ge", "g", "dge", "di", "gg"});
-		graphemes.put(Phoneme.CK, new String[] {"k", "c", "ch", "cc", "lk", "qu", "ck", "x", "q"});
+		graphemes.put(Phoneme.DGE, new String[] {"j", "dge"});
+		graphemes.put(Phoneme.CK, new String[] {"k", "c", "cc", "ck", "q"});
 		graphemes.put(Phoneme.L, new String[] {"l", "ll"});
-		graphemes.put(Phoneme.M, new String[] {"m", "mm", "mb", "mn", "lm"});
-		graphemes.put(Phoneme.N, new String[] {"n", "nn", "kn", "gn", "pn", "mn"});
+		graphemes.put(Phoneme.M, new String[] {"m", "mm"});
+		graphemes.put(Phoneme.N, new String[] {"n", "nn"});
 		graphemes.put(Phoneme.P, new String[] {"p", "pp"});
-		graphemes.put(Phoneme.R, new String[] {"r", "rr", "wr", "rh"});
-		graphemes.put(Phoneme.S, new String[] {"s", "ss", "c", "sc", "ps", "st", "ce", "se"});
-		graphemes.put(Phoneme.T, new String[] {"t", "tt", "th", "ed"});
-		graphemes.put(Phoneme.V, new String[] {"v", "f", "ph", "ve"});
-		graphemes.put(Phoneme.W, new String[] {"w", "wh", "u", "o"});
-		graphemes.put(Phoneme.Z, new String[] {"z", "zz", "s", "ss", "x", "ze", "se"});
-		graphemes.put(Phoneme.SZ, new String[] {"s", "si", "z"});
-		graphemes.put(Phoneme.CH, new String[] {"ch", "tch", "tu", "ti", "te"});
-		graphemes.put(Phoneme.SH, new String[] {"sh", "ce", "s", "ci", "si", "ch", "sci", "ti"});
+		graphemes.put(Phoneme.R, new String[] {"r", "rr"});
+		graphemes.put(Phoneme.S, new String[] {"s", "ss"});
+		graphemes.put(Phoneme.T, new String[] {"t", "tt"});
+		graphemes.put(Phoneme.V, new String[] {"v"});
+		graphemes.put(Phoneme.W, new String[] {"w"});
+		graphemes.put(Phoneme.Z, new String[] {"z", "zz"});
+		graphemes.put(Phoneme.SZ, new String[] {});
+		graphemes.put(Phoneme.CH, new String[] {"ch", "tch"});
+		graphemes.put(Phoneme.SH, new String[] {"sh"});
 		graphemes.put(Phoneme.THS, new String[] {"th"});
-		graphemes.put(Phoneme.THZ, new String[] {"th"});
-		graphemes.put(Phoneme.NG, new String[] {"ng", "n", "ngue"});
-		graphemes.put(Phoneme.Y, new String[] {"y", "i", "j"});
-		graphemes.put(Phoneme.A, new String[] {"a", "ai", "au"});
-		graphemes.put(Phoneme.AI, new String[] {"a", "ai", "eigh", "aigh", "ay", "er", "et", "ei", "au", "a_e", "ea", "ey"});
-		graphemes.put(Phoneme.E, new String[] {"e", "ea", "u", "ie", "ai", "a", "eo", "ei", "ae"});
-		graphemes.put(Phoneme.EE, new String[] {"e", "ee", "ea", "y", "ey", "oe", "ie", "i", "ei", "eo", "ay"});
-		graphemes.put(Phoneme.I, new String[] {"i", "e", "o", "u", "ui", "y", "ie"});
-		graphemes.put(Phoneme.IE, new String[] {"i", "y", "igh", "ie", "uy", "ye", "ai", "is", "eigh", "i_e"});
-		graphemes.put(Phoneme.AWH, new String[] {"a", "ho", "au", "aw", "ough"});
-		graphemes.put(Phoneme.OE, new String[] {"o", "oa", "o_e", "oe", "ow", "ough", "eau", "oo", "ew"});
-		graphemes.put(Phoneme.OO, new String[] {"o", "oo", "u", "ou"});
-		graphemes.put(Phoneme.UH, new String[] {"u", "o", "oo", "ou"});
-		graphemes.put(Phoneme.UE, new String[] {"o", "oo", "ew", "ue", "u_e", "oe", "ough", "ui", "oew", "ou"});
+		graphemes.put(Phoneme.THZ, new String[] {});
+		graphemes.put(Phoneme.NG, new String[] {"ng", "ngue"});
+		graphemes.put(Phoneme.Y, new String[] {"y"});
+		graphemes.put(Phoneme.A, new String[] {"a"});
+		graphemes.put(Phoneme.AY, new String[] {"a", "eigh", "aigh", "ay", "ei","a_e", "ey"});
+		graphemes.put(Phoneme.E, new String[] {"e"});
+		graphemes.put(Phoneme.EE, new String[] {"ee", "ea", "e_e"});
+		graphemes.put(Phoneme.I, new String[] {"i"});
+		graphemes.put(Phoneme.IE, new String[] {"igh", "ie", "ye", "ai", "i_e"});
+		graphemes.put(Phoneme.AWH, new String[] {"au", "aw", "ough"});
+		graphemes.put(Phoneme.OE, new String[] {"o", "oa", "o_e", "oe", "ough", "eau"});
+		graphemes.put(Phoneme.OO, new String[] {"oo"});
+		graphemes.put(Phoneme.UH, new String[] {"u"});
+		graphemes.put(Phoneme.UE, new String[] {"ew", "ue", "u_e", "oew"});
 		graphemes.put(Phoneme.OI, new String[] {"oi", "oy", "uoy"});
-		graphemes.put(Phoneme.OW, new String[] {"ow", "ou", "ough"});
-		graphemes.put(Phoneme.UR, new String[] {"a", "er", "ar", "our", "ur"});
-		graphemes.put(Phoneme.AIR, new String[] {"air", "are", "ear", "ere", "eir", "ayer"});
-		graphemes.put(Phoneme.AH, new String[] {"a"});
-		graphemes.put(Phoneme.IR, new String[] {"ir", "er", "ur", "ear", "or", "our", "yr"});
-		graphemes.put(Phoneme.AW, new String[] {"aw", "a", "or", "oor", "ore", "oar", "our", "augh", "ar", "ough", "au"});
+		graphemes.put(Phoneme.OW, new String[] {"ow", "ou"});
+		graphemes.put(Phoneme.UR, new String[] {"our", "ur"});
+		graphemes.put(Phoneme.AIR, new String[] {"air", "ere", "eir", "ayer"});
+		graphemes.put(Phoneme.AH, new String[] {"ah"});
+		graphemes.put(Phoneme.IR, new String[] {"ir", "ear", "yr"});
+		graphemes.put(Phoneme.AW, new String[] {"aw", "augh"});
 		graphemes.put(Phoneme.EER, new String[] {"ear", "eer", "ere", "ier"});
-		graphemes.put(Phoneme.URE, new String[] {"ure", "our"});
+		graphemes.put(Phoneme.URE, new String[] {"ure"});
 
 		final Map<String, List<Phoneme>> graphemeMap = new HashMap<>();
 		final Map<String, List<Phoneme>> splitGraphemeMap = new HashMap<>();
@@ -104,6 +104,16 @@ public class PhonemeParser {
 		MAX_LENGTH_GRAPHEME = maxLengthGrapheme;
 	}
 
+	private final DefinedWordPhonemeManager definedWordManager;
+
+	public PhonemeParser() {
+		this(new DefinedWordPhonemeManager(Collections.emptyMap()));
+	}
+
+	public PhonemeParser(final DefinedWordPhonemeManager definedWordManager) {
+		this.definedWordManager = definedWordManager;
+	}
+
 	public List<Phoneme> parse(final String input) throws Exception {
 		final String uncased = input.toLowerCase();
 
@@ -133,6 +143,11 @@ public class PhonemeParser {
 	}
 
 	private void parseWord(final String word, final List<Phoneme> phonemes) throws Exception {
+		if (definedWordManager.isDefined(word)) {
+			phonemes.addAll(definedWordManager.getPhonemes(word));
+			return;
+		}
+
 		String current = word;
 
 		while (current.length() > 0) {
@@ -148,7 +163,6 @@ public class PhonemeParser {
 
 					current = current.charAt(1) + ((current.length() > 3) ? current.substring(3) : "");
 
-					System.out.println(potentialGrapheme);
 					foundGrapheme = true;
 					break;
 				} else if (GRAPHEME_MAP.containsKey(potentialGrapheme)) {
@@ -156,7 +170,6 @@ public class PhonemeParser {
 
 					current = current.substring(potentialGrapheme.length());
 
-					System.out.println(potentialGrapheme);
 					foundGrapheme = true;
 					break;
 				}
