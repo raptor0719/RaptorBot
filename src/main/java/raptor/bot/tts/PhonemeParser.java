@@ -178,11 +178,11 @@ public class PhonemeParser {
 
 	private Phoneme getPhoneme(final String grapheme) {
 		return (grapheme.contains("_")) ?
-				SPLIT_GPAPHEME_MAP.get(grapheme).get(getRandomPhoneme(SPLIT_GPAPHEME_MAP.get(grapheme).size())) :
-					GRAPHEME_MAP.get(grapheme).get(getRandomPhoneme(GRAPHEME_MAP.get(grapheme).size()));
+				SPLIT_GPAPHEME_MAP.get(grapheme).get(getIndex(SPLIT_GPAPHEME_MAP.get(grapheme).size())) :
+					GRAPHEME_MAP.get(grapheme).get(getIndex(GRAPHEME_MAP.get(grapheme).size()));
 	}
 
-	private int getRandomPhoneme(final int count) {
-		return (int) (Math.random() * count);
+	private int getIndex(final int count) {
+		return 0;
 	}
 }
